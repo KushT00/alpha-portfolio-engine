@@ -18,7 +18,7 @@ choreographer==1.2.1
 click==8.3.2
 colorama==0.4.6
 comm==0.2.3
-cryptography==46.0.7
+cryptography==50.0.0
 darkdetect==0.8.0
 debugpy==1.8.20
 decorator==5.2.1
