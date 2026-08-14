@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Activity for {{ slug }} on {{ date }}</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline-item {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #007bff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .time {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .summary {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .details-link {
+            cursor: pointer;
+            color: #007bff;
+            border: none;
+            background: none;
+            font-size: 1em;
+            padding: 0;
+        }
+
+        /* Modal */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        #modal-content {
+            background: #fff;
+            margin: 8vh auto;
+            /* Vertical spacing */
+            padding: 20px;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            max-height: 84vh;
+            /* Max height less than screen */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Prevent outer scroll */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #diff-content {
+            overflow-y: auto;
+            /* Scroll internal content */
+            flex: 1;
+            /* Take remaining space */
+            margin-top: 10px;
+        }
+
+        .close {
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            align-self: flex-end;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Activity for {{ slug }} on {{ date }}</h2>
+        <a href="{{ url_for('index') }}">&larr; Back to Dashboard</a>
+        <br><br>
+
+        <!-- P&L Metrics -->
+        {% if metrics %}
+        <style>
+            .metrics-container {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .metric-box {
+                flex: 1;
+                min-width: 150px;
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                border: 1px solid #eee;
+            }
+
+            .metric-title {
+                color: #666;
+                font-size: 0.9em;
+                margin-bottom: 5px;
+            }
+
+            .metric-value {
+                font-size: 1.4em;
+                font-weight: bold;
+            }
+
+            .val-pos {
+                color: #28a745;
+            }
+
+            .val-neg {
+                color: #dc3545;
+            }
+
+            .val-neu {
+                color: #333;
+            }
+        </style>
+        <div class="metrics-container">
+            <div class="metric-box">
+                <div class="metric-title">Start of Day P&L</div>
+                <div
+                    class="metric-value {{ 'val-pos' if metrics.start_pnl > 0 else 'val-neg' if metrics.start_pnl < 0 else 'val-neu' }}">
+                    {{ "{:,.1f}".format(metrics.start_pnl) }}
+                </div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">Current P&L</div>
+                <div
+                    class="metric-value {{ 'val-pos' if metrics.current_pnl > 0 else 'val-neg' if metrics.current_pnl < 0 else 'val-neu' }}">
+                    {{ "{:,.1f}".format(metrics.current_pnl) }}
+                </div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">Today's P&L (Change)</div>
+                <div
+                    class="metric-value {{ 'val-pos' if metrics.todays_pnl > 0 else 'val-neg' if metrics.todays_pnl < 0 else 'val-neu' }}">
+                    {{ "{:,.1f}".format(metrics.todays_pnl) }}
+                </div>
+            </div>
+            <div class="metric-box">
+                <div class="metric-title">Booked P&L</div>
+                <div
+                    class="metric-value {{ 'val-pos' if metrics.booked_pnl > 0 else 'val-neg' if metrics.booked_pnl < 0 else 'val-neu' }}">
+                    {{ "{:,.1f}".format(metrics.booked_pnl) }}
+                </div>
+            </div>
+        </div>
+        {% if metrics.last_updated %}
+        <div style="text-align: right; margin-top: -20px; margin-bottom: 20px; color: #666; font-size: 0.9em;">
+            Last Updated: {{ metrics.last_updated | to_datetime | attr('strftime')('%H:%M:%S') }}
+        </div>
+        {% endif %}
+        {% endif %}
+
+        {% for change in changes %}
+        <div class="timeline-item">
+            <div class="time">{{ change.timestamp | to_datetime | attr('strftime')('%H:%M:%S') }}</div>
+            <div class="summary">
+                {{ change.diff_summary or 'Position Update' }}
+                &nbsp;
+                <button class="details-link" onclick="showDiff({{ change.id }})">(View Details)</button>
+            </div>
+        </div>
+        {% else %}
+        <p>No activity recorded for this date.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Main Modal for single diff view -->
+    <div id="modal">
+        <div id="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="diff-content">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Large Modal for Daily Log -->
+    <div id="log-modal"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+        <div id="log-modal-content"
+            style="background:#fff; margin:5vh auto; padding:20px; width:95%; max-width:1000px; max-height:90vh; border-radius:8px; display:flex; flex-direction:column; box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+            <span class="close" style="align-self:flex-end; cursor:pointer; font-size:28px;"
+                onclick="closeLogModal()">&times;</span>
+            <h3>Daily Change Log</h3>
+            <div id="log-content" style="overflow-y:auto; flex:1;">Loading...</div>
+        </div>
+    </div>
+
+    <script>
+        // Add button dynamically to header
+        document.addEventListener("DOMContentLoaded", function () {
+            let header = document.querySelector(".container h2");
+            let btn = document.createElement("button");
+            btn.innerText = "See All Changes";
+            btn.style.marginLeft = "20px";
+            btn.style.padding = "5px 10px";
+            btn.style.cursor = "pointer";
+            btn.style.backgroundColor = "#007bff";
+            btn.style.color = "white";
+            btn.style.border = "none";
+            btn.style.borderRadius = "4px";
+            btn.onclick = showDailyLog;
+            header.appendChild(btn);
+        });
+
+        function showDailyLog() {
+            document.getElementById('log-modal').style.display = 'block';
+            document.getElementById('log-content').innerHTML = 'Loading changes...';
+
+            const pathParts = window.location.pathname.split('/');
+            const slug = pathParts[2];
+            const date = pathParts[3];
+
+            fetch('/api/daily_log/' + slug + '/' + date)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('log-content').innerHTML = '<p class="error">' + data.error + '</p>';
+                        return;
+                    }
+
+                    if (!data.events || data.events.length === 0) {
+                        document.getElementById('log-content').innerHTML = '<p>No changes recorded for this day.</p>';
+                        return;
+                    }
+
+                    // CSS for table lines and alignment
+                    let tableStyles = 'width:100%; border-collapse:collapse; border: 1px solid #ccc;';
+                    let thStyle = 'border: 1px solid #ccc; padding: 8px; background: #f8f9fa; text-align: left;'; // Header align left by default
+                    let thNumStyle = 'border: 1px solid #ccc; padding: 8px; background: #f8f9fa; text-align: right;';
+                    let tdStyle = 'border: 1px solid #ccc; padding: 8px; vertical-align: top;';
+
+                    let tableHtml = `<table class="log-table" style="${tableStyles}">
+                        <thead>
+                            <tr>
+                                <th style="${thStyle}">Time</th>
+                                <th style="${thStyle}">Symbol</th>
+                                <th style="${thStyle}">Change</th>
+                                <th style="${thNumStyle}">Today's P&L</th>
+                                <th style="${thNumStyle}">Booked P&L</th>
+                                <th style="${thStyle} width:50px; text-align:center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+                    data.events.forEach(event => {
+                        let pnlColor = event.todays_pnl > 0 ? '#28a745' : (event.todays_pnl < 0 ? '#dc3545' : '#333');
+                        let bookedColor = event.booked_pnl > 0 ? '#28a745' : (event.booked_pnl < 0 ? '#dc3545' : '#333');
+
+                        // Build stacked cell content
+                        let symbolHtml = '';
+                        let changeHtml = '';
+
+                        if (event.changes && event.changes.length > 0) {
+                            event.changes.forEach(c => {
+                                symbolHtml += `<div style="color:${c.color}; white-space:nowrap;">${c.symbol}</div>`;
+                                changeHtml += `<div style="color:${c.color}; white-space:nowrap;">${c.text}</div>`;
+                            });
+                        } else {
+                            changeHtml = event.diff || 'Update'; // Fallback
+                        }
+
+                        tableHtml += '<tr>';
+                        tableHtml += `<td style="${tdStyle} text-align:left;">${event.time}</td>`;
+                        tableHtml += `<td style="${tdStyle} text-align:left;">${symbolHtml}</td>`;
+                        tableHtml += `<td style="${tdStyle} text-align:left;">${changeHtml}</td>`;
+                        tableHtml += `<td style="${tdStyle} text-align:right; color: ${pnlColor}; font-weight: bold;">${(event.todays_pnl || 0).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>`;
+                        tableHtml += `<td style="${tdStyle} text-align:right; color: ${bookedColor}; font-weight: bold;">${(event.booked_pnl || 0).toLocaleString('en-IN', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</td>`;
+                        tableHtml += `<td style="${tdStyle} text-align:center;"><button class="diff-btn" style="border:none; background:none; cursor:pointer; font-size:1.2em;" onclick="closeLogModal(); showDiff(${event.change_id})" title="View Details">&#128065;</button></td>`;
+                        tableHtml += '</tr>';
+                    });
+
+                    tableHtml += '</tbody></table>';
+                    document.getElementById('log-content').innerHTML = tableHtml;
+                });
+        }
+
+        function closeLogModal() {
+            document.getElementById('log-modal').style.display = 'none';
+        }
+
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function (event) {
+            if (event.target == document.getElementById('log-modal')) {
+                closeLogModal();
+            }
+        });
+
+        function showDiff(changeId) {
+            document.getElementById('modal').style.display = 'block';
+            document.getElementById('diff-content').innerHTML = 'Loading...';
+
+            fetch('/api/diff/' + changeId)
+                .then(response => response.json())
+                .then(data => {
+                    let html = '';
+
+                    if (data.error) {
+                        html += '<p class="error">' + data.error + '</p>';
+                    } else {
+                        // 1. Changes Table (Start with this as requested)
+                        html += '<h3>Recent Changes</h3>';
+                        if (data.diff) {
+                            html += buildDiffTable(data.diff);
+                        } else {
+                            html += '<p>No structured diff available.</p>';
+                        }
+
+                        // 2. Summary Text
+                        html += '<p><strong>Summary:</strong> ' + (data.diff_summary || 'No summary') + '</p>';
+
+                        // 3. Overall Position Table
+                        html += '<h3>Overall Position</h3>';
+                        html += buildTradesTable(data.positions);
+                    }
+                    document.getElementById('diff-content').innerHTML = html;
+                });
+        }
+
+        function buildDiffTable(diff) {
+            let html = '';
+            let hasChanges = false;
+
+            // Helper to render rows
+            const renderRows = (items, type, color) => {
+                if (!items || items.length === 0) return '';
+                hasChanges = true;
+                let rows = '';
+                items.forEach(item => {
+                    let desc = '';
+                    if (type === 'MODIFIED') {
+                        let sign = item.quantity_diff > 0 ? '+' : '';
+                        desc = `Qty: ${item.old_quantity} &rarr; <b>${item.quantity}</b> (${sign}${item.quantity_diff})`;
+                    } else {
+                        desc = `Qty: ${item.quantity}`;
+                    }
+
+                    rows += `<tr style="background-color: ${color};">
+                        <td><b>${type}</b></td>
+                        <td>${item.trading_symbol}</td>
+                        <td>${item.product}</td>
+                        <td>${desc}</td>
+                    </tr>`;
+                });
+                return rows;
+            };
+
+            let rows = '';
+            rows += renderRows(diff.added, 'ADDED', '#d4edda'); // Greenish
+            rows += renderRows(diff.removed, 'REMOVED', '#f8d7da'); // Reddish
+            rows += renderRows(diff.modified, 'MODIFIED', '#fff3cd'); // Yellowish
+
+            if (!hasChanges) {
+                return '<p>No changes detected in position structure.</p>';
+            }
+
+            html += '<table border="1" cellpadding="5" style="border-collapse:collapse; width:100%">';
+            html += `<thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Symbol</th>
+                            <th>Product</th>
+                            <th>Change</th>
+                        </tr>
+                    </thead><tbody>`;
+            html += rows;
+            html += '</tbody></table>';
+            html += '<div style="height: 15px;"></div>';
+            return html;
+        }
+
+        function buildTradesTable(positions) {
+            // Renamed from buildDiffView to buildTradesTable for clarity, 
+            // but keeping logic same as before for the overall list
+
+            if (!positions || positions.length === 0) return '<p>No positions.</p>';
+
+            // Flatten trades
+            let allTrades = [];
+            positions.forEach(p => {
+                if (p.trades) {
+                    p.trades.forEach(t => allTrades.push(t));
+                }
+            });
+
+            // Sort: NIFTY > SENSEX > Others
+            allTrades.sort((a, b) => {
+                const getPriority = (symbol) => {
+                    symbol = (symbol || '').toUpperCase();
+                    if (symbol.startsWith('NIFTY')) return 1;
+                    if (symbol.startsWith('SENSEX')) return 2;
+                    // Keep other indices high if needed, or just default
+                    if (symbol.startsWith('BANKNIFTY')) return 3;
+                    if (symbol.startsWith('FINNIFTY')) return 4;
+                    return 5;
+                };
+
+                const pA = getPriority(a.trading_symbol);
+                const pB = getPriority(b.trading_symbol);
+
+                if (pA !== pB) return pA - pB;
+                return (a.trading_symbol || '').localeCompare(b.trading_symbol || '');
+            });
+
+            let html = '<table border="1" cellpadding="5" style="border-collapse:collapse; width:100%">';
+            html += `
+                <thead>
+                    <tr>
+                        <th style="text-align: left;">Symbol</th>
+                        <th style="text-align: right;">Qty</th>
+                        <th style="text-align: right;">Price</th>
+                        <th style="text-align: right;">P&L</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+            allTrades.forEach(t => {
+                // Format P&L to 1 decimal
+                let pnl = parseFloat(t.unbooked_pnl || 0).toFixed(1);
+                // Format Price to 1 decimal
+                let price = parseFloat(t.average_price || 0).toFixed(1);
+
+                // Optional: Color code P&L
+                // Sensibull uses Green for profit.
+                let pnlStyle = `color: ${pnl >= 0 ? '#28a745' : '#dc3545'}; font-weight: bold;`;
+
+                html += `<tr>
+                    <td style="text-align: left;">${t.trading_symbol}</td>
+                    <td style="text-align: right;">${t.quantity}</td>
+                    <td style="text-align: right;">${price}</td>
+                    <td style="text-align: right; ${pnlStyle}">${pnl}</td>
+                </tr>`;
+            });
+
+            html += '</tbody></table>';
+            html += '<div style="height: 20px;"></div>'; // Extra spacer at bottom just in case
+            return html;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        window.onclick = function (event) {
+            if (event.target == document.getElementById('modal')) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

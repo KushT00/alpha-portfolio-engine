@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exact Live Trader Sizing — Wave + Survivor Heatmap</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080d16;
+            --card-bg: rgba(14, 20, 35, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --cyan: #06b6d4;
+            --purple: #8b5cf6;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --green: #10b981;
+            --txt: #f1f5f9;
+            --muted: #94a3b8;
+            --dim: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: var(--txt); font-family: 'Inter', sans-serif; padding: 40px 5%; min-height: 100vh;
+        }
+        header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--card-border);
+        }
+        header h1 {
+            font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 800;
+            background: linear-gradient(to right, #06b6d4, #8b5cf6, #10b981);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        header p { font-size: 13px; color: var(--muted); margin-top: 4px; }
+        .badge {
+            display: inline-block; padding: 6px 12px; font-size: 12px; font-weight: 600; border-radius: 6px; background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .grid-stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 35px;
+        }
+        .card-stat {
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px; backdrop-filter: blur(16px);
+        }
+        .stat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 8px; }
+        .stat-value { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+        .stat-sub { font-size: 11px; color: var(--dim); }
+        .text-green { color: #10b981 !important; }
+        .text-cyan { color: #06b6d4 !important; }
+        .text-purple { color: #8b5cf6 !important; }
+
+        .heatmap-box {
+            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 20px; padding: 30px; backdrop-filter: blur(16px); margin-bottom: 35px;
+        }
+        .heatmap-title { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 8px; color: #f3f4f6; }
+        .heatmap-subtitle { font-size: 13px; color: var(--muted); margin-bottom: 25px; }
+
+        .months-flex { display: flex; flex-wrap: wrap; gap: 24px; }
+        .month-block { display: flex; flex-direction: column; align-items: flex-start; }
+        .month-grid { display: grid; grid-template-columns: repeat(7, 16px); gap: 5px; margin-bottom: 8px; }
+
+        .day-tile { width: 16px; height: 16px; border-radius: 3px; transition: transform 0.15s ease; }
+        .day-tile:hover { transform: scale(1.4); z-index: 20; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+
+        .tile-pad { background: transparent; pointer-events: none; }
+        .tile-weekend { background: rgba(255, 255, 255, 0.04); }
+        .tile-zero { background: rgba(255, 255, 255, 0.07); }
+
+        .tile-g1 { background: #86efac; }
+        .tile-g2 { background: #4ade80; }
+        .tile-g3 { background: #22c55e; }
+        .tile-g4 { background: #15803d; }
+
+        .tile-r1 { background: #fca5a5; }
+        .tile-r2 { background: #f87171; }
+        .tile-r3 { background: #ef4444; }
+        .tile-r4 { background: #b91c1c; }
+
+        .month-name { font-size: 13px; font-weight: 600; color: var(--muted); }
+
+        #tooltip {
+            position: absolute; display: none; background: #1e293b; color: #f8fafc; border: 1px solid #334155; padding: 10px 14px; border-radius: 8px; font-size: 12px; pointer-events: none; z-index: 1000; box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h1>EXACT LIVE TRADER SIZING (FAR OTM 0.20 DELTA)</h1>
+            <p>Target Premium: Rs. 20-30 · Low Risk 2.5-3.0% Monthly Return Sizing</p>
+        </div>
+        <div class="badge">Low Risk 2.5% Monthly Scale</div>
+    </header>
+
+    <div class="grid-stats">
+        <div class="card-stat">
+            <div class="stat-label">Wave Strategy PnL</div>
+            <div class="stat-value text-cyan">Rs. +10,602,171</div>
+            <div class="stat-sub">Grid Scraper Range System</div>
+        </div>
+        <div class="card-stat">
+            <div class="stat-label">Survivor Strategy PnL</div>
+            <div class="stat-value text-purple">Rs. +48,785,748</div>
+            <div class="stat-sub">Trend Option Selling System</div>
+        </div>
+        <div class="card-stat">
+            <div class="stat-label">Combined Net PnL</div>
+            <div class="stat-value text-green">Rs. +53,275,739</div>
+            <div class="stat-sub">7-Month Realized Profit</div>
+        </div>
+        <div class="card-stat">
+            <div class="stat-label">Avg Daily Margin</div>
+            <div class="stat-value">Rs. 965,499</div>
+            <div class="stat-sub">Peak Max: Rs. 1,664,837</div>
+        </div>
+    </div>
+
+    <div class="heatmap-box">
+        <div class="heatmap-title">Combined Portfolio Performance Heatmap</div>
+        <div class="heatmap-subtitle">Daily breakdown matching live trader console (~2.5% - 3.0% monthly return)</div>
+
+        <div class="months-flex" id="heatmapGrid"></div>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <script>
+        const monthsData = [{"name": "January", "year": 2026, "days": [{"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 1, "date": "2026-01-01", "pnl": 2662.9999999995744, "wave_pnl": 2662.9999999995744, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 2, "date": "2026-01-02", "pnl": 6774123.609914292, "wave_pnl": -1339.1016318128106, "survivor_pnl": 6775462.711546104, "gamma_pnl": 0.0, "type": "trade"}, {"day": 3, "date": "2026-01-03", "pnl": 0.0, "type": "weekend"}, {"day": 4, "date": "2026-01-04", "pnl": 0.0, "type": "weekend"}, {"day": 5, "date": "2026-01-05", "pnl": 7016.179143789689, "wave_pnl": 2334.9179545920597, "survivor_pnl": 4681.261189197629, "gamma_pnl": 0.0, "type": "trade"}, {"day": 6, "date": "2026-01-06", "pnl": 9296.66290291114, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 9296.66290291114, "type": "trade_0dte"}, {"day": 7, "date": "2026-01-07", "pnl": 4472.250000000095, "wave_pnl": 4472.250000000095, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 8, "date": "2026-01-08", "pnl": 12707.749999999905, "wave_pnl": 12707.749999999905, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 9, "date": "2026-01-09", "pnl": 1560855.5724425423, "wave_pnl": 1560855.5724425423, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 10, "date": "2026-01-10", "pnl": 0.0, "type": "weekend"}, {"day": 11, "date": "2026-01-11", "pnl": 0.0, "type": "weekend"}, {"day": 12, "date": "2026-01-12", "pnl": 65082.75013430699, "wave_pnl": -17587.249957165695, "survivor_pnl": 82670.00009147268, "gamma_pnl": 0.0, "type": "trade"}, {"day": 13, "date": "2026-01-13", "pnl": -391863.0344303247, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -391863.0344303247, "type": "trade_0dte"}, {"day": 14, "date": "2026-01-14", "pnl": -335.33333178318895, "wave_pnl": -335.33333178318895, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 15, "date": "2026-01-15", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 16, "date": "2026-01-16", "pnl": 840.5297168911488, "wave_pnl": 840.5297168911488, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 17, "date": "2026-01-17", "pnl": 0.0, "type": "weekend"}, {"day": 18, "date": "2026-01-18", "pnl": 0.0, "type": "weekend"}, {"day": 19, "date": "2026-01-19", "pnl": -11578954.956766073, "wave_pnl": -1650031.0439942204, "survivor_pnl": -9928923.912771853, "gamma_pnl": 0.0, "type": "trade"}, {"day": 20, "date": "2026-01-20", "pnl": -416678.1388060936, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -416678.1388060936, "type": "trade_0dte"}, {"day": 21, "date": "2026-01-21", "pnl": -23170.7500000009, "wave_pnl": -23170.7500000009, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 22, "date": "2026-01-22", "pnl": -16646.750000000993, "wave_pnl": -16646.750000000993, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 23, "date": "2026-01-23", "pnl": 7783717.797129562, "wave_pnl": 4529516.232559538, "survivor_pnl": 3254201.5645700237, "gamma_pnl": 0.0, "type": "trade"}, {"day": 24, "date": "2026-01-24", "pnl": 0.0, "type": "weekend"}, {"day": 25, "date": "2026-01-25", "pnl": 0.0, "type": "weekend"}, {"day": 26, "date": "2026-01-26", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 27, "date": "2026-01-27", "pnl": -377734.4917796125, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -377734.4917796125, "type": "trade_0dte"}, {"day": 28, "date": "2026-01-28", "pnl": 4953.529705682497, "wave_pnl": 4953.529705682497, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 29, "date": "2026-01-29", "pnl": -4249.224299552679, "wave_pnl": -4249.224299552679, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 30, "date": "2026-01-30", "pnl": 2612.625467085618, "wave_pnl": 2612.625467085618, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 31, "date": "2026-01-31", "pnl": 0.0, "type": "weekend"}]}, {"name": "February", "year": 2026, "days": [{"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 1, "date": "2026-02-01", "pnl": 0.0, "type": "weekend"}, {"day": 2, "date": "2026-02-02", "pnl": 6517641.490476943, "wave_pnl": -16963.1169325756, "survivor_pnl": 6534604.607409518, "gamma_pnl": 0.0, "type": "trade"}, {"day": 3, "date": "2026-02-03", "pnl": 20586.310000016558, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 20586.310000016558, "type": "trade_0dte"}, {"day": 4, "date": "2026-02-04", "pnl": -422.9764777423145, "wave_pnl": -422.9764777423145, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 5, "date": "2026-02-05", "pnl": -3315148.1565527627, "wave_pnl": -3315148.1565527627, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 6, "date": "2026-02-06", "pnl": 1539281.854890173, "wave_pnl": 1539281.854890173, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 7, "date": "2026-02-07", "pnl": 0.0, "type": "weekend"}, {"day": 8, "date": "2026-02-08", "pnl": 0.0, "type": "weekend"}, {"day": 9, "date": "2026-02-09", "pnl": -9957380.73981211, "wave_pnl": -3354438.7235974213, "survivor_pnl": -6602942.016214688, "gamma_pnl": 0.0, "type": "trade"}, {"day": 10, "date": "2026-02-10", "pnl": -389193.1517160291, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -389193.1517160291, "type": "trade_0dte"}, {"day": 11, "date": "2026-02-11", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 12, "date": "2026-02-12", "pnl": 281.0768241697216, "wave_pnl": 281.0768241697216, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 13, "date": "2026-02-13", "pnl": 4514.77778082114, "wave_pnl": 4514.77778082114, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 14, "date": "2026-02-14", "pnl": 0.0, "type": "weekend"}, {"day": 15, "date": "2026-02-15", "pnl": 0.0, "type": "weekend"}, {"day": 16, "date": "2026-02-16", "pnl": -25195.268750796058, "wave_pnl": -7206.5787603325625, "survivor_pnl": -17988.689990463496, "gamma_pnl": 0.0, "type": "trade"}, {"day": 17, "date": "2026-02-17", "pnl": 1506.0055586611657, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 1506.0055586611657, "type": "trade_0dte"}, {"day": 18, "date": "2026-02-18", "pnl": -101.16299294362517, "wave_pnl": -101.16299294362517, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 19, "date": "2026-02-19", "pnl": 1609.5036803382472, "wave_pnl": 1609.5036803382472, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 20, "date": "2026-02-20", "pnl": -1329.9492417662173, "wave_pnl": -1329.9492417662173, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 21, "date": "2026-02-21", "pnl": 0.0, "type": "weekend"}, {"day": 22, "date": "2026-02-22", "pnl": 0.0, "type": "weekend"}, {"day": 23, "date": "2026-02-23", "pnl": 16004.085851896682, "wave_pnl": -1323.4720707454298, "survivor_pnl": 17327.55792264211, "gamma_pnl": 0.0, "type": "trade"}, {"day": 24, "date": "2026-02-24", "pnl": 11598.445820331137, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 11598.445820331137, "type": "trade_0dte"}, {"day": 25, "date": "2026-02-25", "pnl": 495.5370632322205, "wave_pnl": 495.5370632322205, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 26, "date": "2026-02-26", "pnl": -3304833.9613568, "wave_pnl": -3304833.9613568, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 27, "date": "2026-02-27", "pnl": 34439.74999999915, "wave_pnl": 34439.74999999915, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 28, "date": "2026-02-28", "pnl": 0.0, "type": "weekend"}]}, {"name": "March", "year": 2026, "days": [{"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 1, "date": "2026-03-01", "pnl": 0.0, "type": "weekend"}, {"day": 2, "date": "2026-03-02", "pnl": -6423849.663556948, "wave_pnl": 17567.00011551724, "survivor_pnl": -6441416.663672466, "gamma_pnl": 0.0, "type": "trade"}, {"day": 3, "date": "2026-03-03", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade_0dte"}, {"day": 4, "date": "2026-03-04", "pnl": -7701.75000000052, "wave_pnl": -7701.75000000052, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 5, "date": "2026-03-05", "pnl": -10412.000000000899, "wave_pnl": -10412.000000000899, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 6, "date": "2026-03-06", "pnl": 27601.74999999981, "wave_pnl": 27601.74999999981, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 7, "date": "2026-03-07", "pnl": 0.0, "type": "weekend"}, {"day": 8, "date": "2026-03-08", "pnl": 0.0, "type": "weekend"}, {"day": 9, "date": "2026-03-09", "pnl": 115967.25307071896, "wave_pnl": 20622.251083159517, "survivor_pnl": 95345.00198755944, "gamma_pnl": 0.0, "type": "trade"}, {"day": 10, "date": "2026-03-10", "pnl": -664532.1166667746, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -664532.1166667746, "type": "trade_0dte"}, {"day": 11, "date": "2026-03-11", "pnl": 27829.249999999338, "wave_pnl": 27829.249999999338, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 12, "date": "2026-03-12", "pnl": 5858.499999998676, "wave_pnl": 5858.499999998676, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 13, "date": "2026-03-13", "pnl": 28076.49999999896, "wave_pnl": 28076.49999999896, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 14, "date": "2026-03-14", "pnl": 0.0, "type": "weekend"}, {"day": 15, "date": "2026-03-15", "pnl": 0.0, "type": "weekend"}, {"day": 16, "date": "2026-03-16", "pnl": 8927658.225848485, "wave_pnl": 2746386.9434448215, "survivor_pnl": 6181271.282403663, "gamma_pnl": 0.0, "type": "trade"}, {"day": 17, "date": "2026-03-17", "pnl": -272.4868099233297, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -272.4868099233297, "type": "trade_0dte"}, {"day": 18, "date": "2026-03-18", "pnl": -297.21774908620023, "wave_pnl": -297.21774908620023, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 19, "date": "2026-03-19", "pnl": 26960.499999999338, "wave_pnl": 26960.499999999338, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 20, "date": "2026-03-20", "pnl": -26056.500000001088, "wave_pnl": -26056.500000001088, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 21, "date": "2026-03-21", "pnl": 0.0, "type": "weekend"}, {"day": 22, "date": "2026-03-22", "pnl": 0.0, "type": "weekend"}, {"day": 23, "date": "2026-03-23", "pnl": 2716510.153384032, "wave_pnl": 2803218.289129971, "survivor_pnl": -86708.135745939, "gamma_pnl": 0.0, "type": "trade"}, {"day": 24, "date": "2026-03-24", "pnl": -335498.3719270025, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -335498.3719270025, "type": "trade_0dte"}, {"day": 25, "date": "2026-03-25", "pnl": -6996.500000000615, "wave_pnl": -6996.500000000615, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 26, "date": "2026-03-26", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 27, "date": "2026-03-27", "pnl": 1407100.2107649676, "wave_pnl": 1407100.2107649676, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 28, "date": "2026-03-28", "pnl": 0.0, "type": "weekend"}, {"day": 29, "date": "2026-03-29", "pnl": 0.0, "type": "weekend"}, {"day": 30, "date": "2026-03-30", "pnl": 5913106.255443385, "wave_pnl": 2373.695140017529, "survivor_pnl": 5910732.560303368, "gamma_pnl": 0.0, "type": "trade"}, {"day": 31, "date": "2026-03-31", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade_0dte"}]}, {"name": "April", "year": 2026, "days": [{"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 1, "date": "2026-04-01", "pnl": 18121.7499999991, "wave_pnl": 18121.7499999991, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 2, "date": "2026-04-02", "pnl": -6790.140297069367, "wave_pnl": -6790.140297069367, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 3, "date": "2026-04-03", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 4, "date": "2026-04-04", "pnl": 0.0, "type": "weekend"}, {"day": 5, "date": "2026-04-05", "pnl": 0.0, "type": "weekend"}, {"day": 6, "date": "2026-04-06", "pnl": -3006255.5396869043, "wave_pnl": -2986056.056882829, "survivor_pnl": -20199.48280407545, "gamma_pnl": 0.0, "type": "trade"}, {"day": 7, "date": "2026-04-07", "pnl": 17233.5580152532, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 17233.5580152532, "type": "trade_0dte"}, {"day": 8, "date": "2026-04-08", "pnl": -6066.0000000005675, "wave_pnl": -6066.0000000005675, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 9, "date": "2026-04-09", "pnl": 17199.749999998912, "wave_pnl": 17199.749999998912, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 10, "date": "2026-04-10", "pnl": 4194895.191728458, "wave_pnl": 4194895.191728458, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 11, "date": "2026-04-11", "pnl": 0.0, "type": "weekend"}, {"day": 12, "date": "2026-04-12", "pnl": 0.0, "type": "weekend"}, {"day": 13, "date": "2026-04-13", "pnl": 6162870.559024014, "wave_pnl": 1431.4705676335402, "survivor_pnl": 6161439.08845638, "gamma_pnl": 0.0, "type": "trade"}, {"day": 14, "date": "2026-04-14", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade_0dte"}, {"day": 15, "date": "2026-04-15", "pnl": 5943.499999999858, "wave_pnl": 5943.499999999858, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 16, "date": "2026-04-16", "pnl": 4312280.936012341, "wave_pnl": 4312280.936012341, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 17, "date": "2026-04-17", "pnl": -1570434.9681654116, "wave_pnl": -1570434.9681654116, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 18, "date": "2026-04-18", "pnl": 0.0, "type": "weekend"}, {"day": 19, "date": "2026-04-19", "pnl": 0.0, "type": "weekend"}, {"day": 20, "date": "2026-04-20", "pnl": -8498.0410809342, "wave_pnl": -1400.9994830853611, "survivor_pnl": -7097.041597848838, "gamma_pnl": 0.0, "type": "trade"}, {"day": 21, "date": "2026-04-21", "pnl": 4049.3730821366753, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 4049.3730821366753, "type": "trade_0dte"}, {"day": 22, "date": "2026-04-22", "pnl": 7053.9999999994325, "wave_pnl": 7053.9999999994325, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 23, "date": "2026-04-23", "pnl": 1471552.7345583562, "wave_pnl": 1471552.7345583562, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 24, "date": "2026-04-24", "pnl": -1550570.1248792883, "wave_pnl": -1550570.1248792883, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 25, "date": "2026-04-25", "pnl": 0.0, "type": "weekend"}, {"day": 26, "date": "2026-04-26", "pnl": 0.0, "type": "weekend"}, {"day": 27, "date": "2026-04-27", "pnl": 10486611.219095385, "wave_pnl": 4237460.749268421, "survivor_pnl": 6249150.469826964, "gamma_pnl": 0.0, "type": "trade"}, {"day": 28, "date": "2026-04-28", "pnl": -647471.7683417504, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -647471.7683417504, "type": "trade_0dte"}, {"day": 29, "date": "2026-04-29", "pnl": -2609.2363584381346, "wave_pnl": -2609.2363584381346, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 30, "date": "2026-04-30", "pnl": -4551.897077786586, "wave_pnl": -4551.897077786586, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}]}, {"name": "May", "year": 2026, "days": [{"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 1, "date": "2026-05-01", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 2, "date": "2026-05-02", "pnl": 0.0, "type": "weekend"}, {"day": 3, "date": "2026-05-03", "pnl": 0.0, "type": "weekend"}, {"day": 4, "date": "2026-05-04", "pnl": 34007.362868251505, "wave_pnl": 6742.799654370509, "survivor_pnl": 27264.563213880996, "gamma_pnl": 0.0, "type": "trade"}, {"day": 5, "date": "2026-05-05", "pnl": -658102.6312184697, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -658102.6312184697, "type": "trade_0dte"}, {"day": 6, "date": "2026-05-06", "pnl": -11124.50000000019, "wave_pnl": -11124.50000000019, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 7, "date": "2026-05-07", "pnl": -35596.50000000038, "wave_pnl": -35596.50000000038, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 8, "date": "2026-05-08", "pnl": 140.81539196164516, "wave_pnl": 140.81539196164516, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 9, "date": "2026-05-09", "pnl": 0.0, "type": "weekend"}, {"day": 10, "date": "2026-05-10", "pnl": 0.0, "type": "weekend"}, {"day": 11, "date": "2026-05-11", "pnl": 6182570.692676695, "wave_pnl": 6172.740333053996, "survivor_pnl": 6176397.952343641, "gamma_pnl": 0.0, "type": "trade"}, {"day": 12, "date": "2026-05-12", "pnl": 11714.52536400429, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 11714.52536400429, "type": "trade_0dte"}, {"day": 13, "date": "2026-05-13", "pnl": -2394.2500000007567, "wave_pnl": -2394.2500000007567, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 14, "date": "2026-05-14", "pnl": 1382063.666768892, "wave_pnl": 1382063.666768892, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 15, "date": "2026-05-15", "pnl": 2688.6194826554415, "wave_pnl": 2688.6194826554415, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 16, "date": "2026-05-16", "pnl": 0.0, "type": "weekend"}, {"day": 17, "date": "2026-05-17", "pnl": 0.0, "type": "weekend"}, {"day": 18, "date": "2026-05-18", "pnl": 6053999.015264129, "wave_pnl": -9773.500832930296, "survivor_pnl": 6063772.5160970595, "gamma_pnl": 0.0, "type": "trade"}, {"day": 19, "date": "2026-05-19", "pnl": -615603.4174690231, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -615603.4174690231, "type": "trade_0dte"}, {"day": 20, "date": "2026-05-20", "pnl": -1232.0390258284956, "wave_pnl": -1232.0390258284956, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 21, "date": "2026-05-21", "pnl": -1536471.548279677, "wave_pnl": -1536471.548279677, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 22, "date": "2026-05-22", "pnl": 1406970.5361660805, "wave_pnl": 1406970.5361660805, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 23, "date": "2026-05-23", "pnl": 0.0, "type": "weekend"}, {"day": 24, "date": "2026-05-24", "pnl": 0.0, "type": "weekend"}, {"day": 25, "date": "2026-05-25", "pnl": -68678.95090384237, "wave_pnl": -51.77622840917479, "survivor_pnl": -68627.1746754332, "gamma_pnl": 0.0, "type": "trade"}, {"day": 26, "date": "2026-05-26", "pnl": -684584.6083518509, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -684584.6083518509, "type": "trade_0dte"}, {"day": 27, "date": "2026-05-27", "pnl": 2634.999999999527, "wave_pnl": 2634.999999999527, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 28, "date": "2026-05-28", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 29, "date": "2026-05-29", "pnl": 20200.24999999967, "wave_pnl": 20200.24999999967, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 30, "date": "2026-05-30", "pnl": 0.0, "type": "weekend"}, {"day": 31, "date": "2026-05-31", "pnl": 0.0, "type": "weekend"}]}, {"name": "June", "year": 2026, "days": [{"day": 1, "date": "2026-06-01", "pnl": 7544179.029885084, "wave_pnl": 1403735.4940977495, "survivor_pnl": 6140443.535787335, "gamma_pnl": 0.0, "type": "trade"}, {"day": 2, "date": "2026-06-02", "pnl": 7577.021952629501, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 7577.021952629501, "type": "trade_0dte"}, {"day": 3, "date": "2026-06-03", "pnl": -3035.828903278119, "wave_pnl": -3035.828903278119, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 4, "date": "2026-06-04", "pnl": 11840.499999999101, "wave_pnl": 11840.499999999101, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 5, "date": "2026-06-05", "pnl": 1393653.9083248165, "wave_pnl": 1393653.9083248165, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 6, "date": "2026-06-06", "pnl": 0.0, "type": "weekend"}, {"day": 7, "date": "2026-06-07", "pnl": 0.0, "type": "weekend"}, {"day": 8, "date": "2026-06-08", "pnl": 34201.82537393174, "wave_pnl": 1489.8510778657705, "survivor_pnl": 32711.974296065964, "gamma_pnl": 0.0, "type": "trade"}, {"day": 9, "date": "2026-06-09", "pnl": -974.9329393762482, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -974.9329393762482, "type": "trade_0dte"}, {"day": 10, "date": "2026-06-10", "pnl": -647.5000000002365, "wave_pnl": -647.5000000002365, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 11, "date": "2026-06-11", "pnl": 1383733.412770257, "wave_pnl": 1383733.412770257, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 12, "date": "2026-06-12", "pnl": -1528518.4147379838, "wave_pnl": -1528518.4147379838, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 13, "date": "2026-06-13", "pnl": 0.0, "type": "weekend"}, {"day": 14, "date": "2026-06-14", "pnl": 0.0, "type": "weekend"}, {"day": 15, "date": "2026-06-15", "pnl": -134104.3875785908, "wave_pnl": -58018.49946052862, "survivor_pnl": -76085.88811806218, "gamma_pnl": 0.0, "type": "trade"}, {"day": 16, "date": "2026-06-16", "pnl": -7005.427309277298, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -7005.427309277298, "type": "trade_0dte"}, {"day": 17, "date": "2026-06-17", "pnl": 4943.499999999858, "wave_pnl": 4943.499999999858, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 18, "date": "2026-06-18", "pnl": 1432033.810564146, "wave_pnl": 1432033.810564146, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 19, "date": "2026-06-19", "pnl": -4663255.647397483, "wave_pnl": -4663255.647397483, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 20, "date": "2026-06-20", "pnl": 0.0, "type": "weekend"}, {"day": 21, "date": "2026-06-21", "pnl": 0.0, "type": "weekend"}, {"day": 22, "date": "2026-06-22", "pnl": -20602.352729183604, "wave_pnl": -13662.748734832476, "survivor_pnl": -6939.603994351128, "gamma_pnl": 0.0, "type": "trade"}, {"day": 23, "date": "2026-06-23", "pnl": 14772.99477891809, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 14772.99477891809, "type": "trade_0dte"}, {"day": 24, "date": "2026-06-24", "pnl": -12071.250000000473, "wave_pnl": -12071.250000000473, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 25, "date": "2026-06-25", "pnl": 1433648.6478266292, "wave_pnl": 1433648.6478266292, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 26, "date": "2026-06-26", "pnl": 0.0, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 27, "date": "2026-06-27", "pnl": 0.0, "type": "weekend"}, {"day": 28, "date": "2026-06-28", "pnl": 0.0, "type": "weekend"}, {"day": 29, "date": "2026-06-29", "pnl": 6166603.508898838, "wave_pnl": 1860.4955884370518, "survivor_pnl": 6164743.013310402, "gamma_pnl": 0.0, "type": "trade"}, {"day": 30, "date": "2026-06-30", "pnl": 11056.115019951405, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": 11056.115019951405, "type": "trade_0dte"}]}, {"name": "July", "year": 2026, "days": [{"day": 0, "pnl": null, "type": "pad"}, {"day": 0, "pnl": null, "type": "pad"}, {"day": 1, "date": "2026-07-01", "pnl": -4224.750000000331, "wave_pnl": -4224.750000000331, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 2, "date": "2026-07-02", "pnl": 1427779.209290805, "wave_pnl": 1427779.209290805, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 3, "date": "2026-07-03", "pnl": -1579018.7257916096, "wave_pnl": -1579018.7257916096, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 4, "date": "2026-07-04", "pnl": 0.0, "type": "weekend"}, {"day": 5, "date": "2026-07-05", "pnl": 0.0, "type": "weekend"}, {"day": 6, "date": "2026-07-06", "pnl": 6138274.728448858, "wave_pnl": -1469.7830900401473, "survivor_pnl": 6139744.511538898, "gamma_pnl": 0.0, "type": "trade"}, {"day": 7, "date": "2026-07-07", "pnl": -11766.04437679821, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -11766.04437679821, "type": "trade_0dte"}, {"day": 8, "date": "2026-07-08", "pnl": 878.4903320509576, "wave_pnl": 878.4903320509576, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 9, "date": "2026-07-09", "pnl": -4668418.804520364, "wave_pnl": -4668418.804520364, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 10, "date": "2026-07-10", "pnl": -8633.000000000284, "wave_pnl": -8633.000000000284, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 11, "date": "2026-07-11", "pnl": 0.0, "type": "weekend"}, {"day": 12, "date": "2026-07-12", "pnl": 0.0, "type": "weekend"}, {"day": 13, "date": "2026-07-13", "pnl": -6270799.463051223, "wave_pnl": -23650.74914643099, "survivor_pnl": -6247148.713904792, "gamma_pnl": 0.0, "type": "trade"}, {"day": 14, "date": "2026-07-14", "pnl": -366408.18044394115, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -366408.18044394115, "type": "trade_0dte"}, {"day": 15, "date": "2026-07-15", "pnl": -549.0095154311927, "wave_pnl": -549.0095154311927, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 16, "date": "2026-07-16", "pnl": -3124411.433516523, "wave_pnl": -3124411.433516523, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 17, "date": "2026-07-17", "pnl": 2856471.289417507, "wave_pnl": 2856471.289417507, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 18, "date": "2026-07-18", "pnl": 0.0, "type": "weekend"}, {"day": 19, "date": "2026-07-19", "pnl": 0.0, "type": "weekend"}, {"day": 20, "date": "2026-07-20", "pnl": 1445492.777627857, "wave_pnl": 1429519.8429839986, "survivor_pnl": 15972.934643858267, "gamma_pnl": 0.0, "type": "trade"}, {"day": 21, "date": "2026-07-21", "pnl": -657.7619972682046, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -657.7619972682046, "type": "trade_0dte"}, {"day": 22, "date": "2026-07-22", "pnl": 5307.5, "wave_pnl": 5307.5, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 23, "date": "2026-07-23", "pnl": 19486.25, "wave_pnl": 19486.25, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 24, "date": "2026-07-24", "pnl": 9357.249999999622, "wave_pnl": 9357.249999999622, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 25, "date": "2026-07-25", "pnl": 0.0, "type": "weekend"}, {"day": 26, "date": "2026-07-26", "pnl": 0.0, "type": "weekend"}, {"day": 27, "date": "2026-07-27", "pnl": 10481939.892506188, "wave_pnl": 4220051.637276816, "survivor_pnl": 6261888.255229372, "gamma_pnl": 0.0, "type": "trade"}, {"day": 28, "date": "2026-07-28", "pnl": -653225.1770605298, "wave_pnl": 0.0, "survivor_pnl": 0.0, "gamma_pnl": -653225.1770605298, "type": "trade_0dte"}, {"day": 29, "date": "2026-07-29", "pnl": -2364.749999999858, "wave_pnl": -2364.749999999858, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 30, "date": "2026-07-30", "pnl": -142.35123757874192, "wave_pnl": -142.35123757874192, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}, {"day": 31, "date": "2026-07-31", "pnl": -3160413.4567704806, "wave_pnl": -3160413.4567704806, "survivor_pnl": 0.0, "gamma_pnl": 0.0, "type": "trade"}]}];
+        const container = document.getElementById('heatmapGrid');
+        const tooltip = document.getElementById('tooltip');
+
+        monthsData.forEach(m => {
+            const monthBlock = document.createElement('div');
+            monthBlock.className = 'month-block';
+
+            const grid = document.createElement('div');
+            grid.className = 'month-grid';
+
+            m.days.forEach(d => {
+                const tile = document.createElement('div');
+                tile.className = 'day-tile';
+
+                if (d.type === 'pad') {
+                    tile.classList.add('tile-pad');
+                } else if (d.type === 'weekend') {
+                    tile.classList.add('tile-weekend');
+                } else {
+                    const pnl = d.pnl;
+                    if (pnl === 0) {
+                        tile.classList.add('tile-zero');
+                    } else if (pnl > 0) {
+                        if (pnl > 30000) tile.classList.add('tile-g4');
+                        else if (pnl > 15000) tile.classList.add('tile-g3');
+                        else if (pnl > 5000) tile.classList.add('tile-g2');
+                        else tile.classList.add('tile-g1');
+                    } else {
+                        const loss = Math.abs(pnl);
+                        if (loss > 30000) tile.classList.add('tile-r4');
+                        else if (loss > 15000) tile.classList.add('tile-r3');
+                        else if (loss > 5000) tile.classList.add('tile-r2');
+                        else tile.classList.add('tile-r1');
+                    }
+
+                    tile.addEventListener('mouseenter', (e) => {
+                        const fmtC = pnl >= 0 ? '+' + pnl.toLocaleString('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0}) : '-' + Math.abs(pnl).toLocaleString('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0});
+                        const fmtW = (d.wave_pnl || 0) >= 0 ? '+' + (d.wave_pnl || 0).toLocaleString('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0}) : '-' + Math.abs(d.wave_pnl || 0).toLocaleString('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0});
+                        const fmtS = (d.survivor_pnl || 0) >= 0 ? '+' + (d.survivor_pnl || 0).toLocaleString('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0}) : '-' + Math.abs(d.survivor_pnl || 0).toLocaleString('en-IN', {style:'currency', currency:'INR', maximumFractionDigits:0});
+
+                        tooltip.innerHTML = `<strong>${d.date}</strong><br>` +
+                            `Combined: <span style="color:${pnl >= 0 ? '#4ade80' : '#f87171'}">${fmtC}</span><br>` +
+                            `<span style="color:#06b6d4">Wave: ${fmtW}</span> | <span style="color:#8b5cf6">Survivor: ${fmtS}</span>`;
+                        tooltip.style.display = 'block';
+                    });
+
+                    tile.addEventListener('mousemove', (e) => {
+                        tooltip.style.left = (e.pageX + 12) + 'px';
+                        tooltip.style.top = (e.pageY + 12) + 'px';
+                    });
+
+                    tile.addEventListener('mouseleave', () => {
+                        tooltip.style.display = 'none';
+                    });
+                }
+
+                grid.appendChild(tile);
+            });
+
+            const monthLabel = document.createElement('div');
+            monthLabel.className = 'month-name';
+            monthLabel.innerText = m.name;
+
+            monthBlock.appendChild(grid);
+            monthBlock.appendChild(monthLabel);
+            container.appendChild(monthBlock);
+        });
+    </script>
+
+</body>
+</html>

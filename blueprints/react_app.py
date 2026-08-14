@@ -115,6 +115,18 @@ def react_dashboard():
     return serve_react_app()
 
 
+# Testing Page
+@react_bp.route("/testing")
+def react_testing():
+    return serve_react_app()
+
+
+# Nifty Master Strategy Dashboard
+@react_bp.route("/nifty-master")
+def react_nifty_master():
+    return serve_react_app()
+
+
 # Trading pages
 @react_bp.route("/positions")
 def react_positions():

@@ -1,0 +1,971 @@
+[00:00:00] Stress. A discretionary trader has more or an algo trader has more?
+[00:00:06] The algo that I made, I made it because I had a loss at one time, so I said that this will not work.
+[00:00:12] Now I make an algo which is a trend following algo because I used to believe in mean reversion.
+[00:00:17] Okay, the typical trader's UI's where he sees the trading terminal, the trading terminal that Zerodha also gives, don't you guys look at the terminal?
+[00:00:27] Do you just keep looking at the code? What is the code saying? What did you buy? What did you sell?
+[00:00:31] Can we catch the UI jump through our port? So I said that let's make a basic setup.
+[00:00:35] If you have caught it correctly, then your 1 to 10, if not 1 to 10, then 1 to 4 or 5 is very common.
+[00:00:41] If I know how to write a code, if it takes me 2-2.5 days, this is just in writing, it will do it in 15 minutes.
+[00:00:50] But have you checked its accuracy?
+[00:01:08] Welcome to another video of Face2Face, friends.
+[00:01:11] It has become very easy to code using AI.
+[00:01:15] You can do algo trading using coding.
+[00:01:17] You can make consistent money by doing proper trading using algo trading.
+[00:01:21] You must have heard this narrative. I have also heard it for a long time.
+[00:01:25] Today in this Face2Face, I have seen this narrative live.
+[00:01:30] I was able to record this Face2Face with a gentleman who was an entrepreneur, a techie, who got a successful exit.
+[00:01:38] Now he is a full-time trader who is coding using AI and making money by trading.
+[00:01:46] Initially he lost money, then he made it, then he lost it, then he earned it.
+[00:01:49] By doing this, he has learned this art.
+[00:01:53] And he has openly shared it with us.
+[00:01:56] So watch this video till the end, only then you will benefit.
+[00:02:00] It is not an entertainment video, it is serious content.
+[00:02:05] And serious content is beneficial only by watching till the end.
+[00:02:08] This is a course on how you can use AI to do trading.
+[00:02:13] So let's welcome today's guest, Mr. Rahi for this Face2Face.
+[00:02:19] Hello, welcome Rahi to this Face2Face trading.
+[00:02:22] Thank you, thank you. I am feeling very good.
+[00:02:26] Same here. I came to know about you from Twitter.
+[00:02:30] And I read some of your articles, your sub-tracks.
+[00:02:34] And I came to know that I will have to catch him.
+[00:02:37] Because he is making a lot of sense.
+[00:02:40] Sure, sure. Whatever I learn, I share it so that more people learn and do it.
+[00:02:47] I think I also had such a journey. I learned a lot, then I started.
+[00:02:52] So I want more people to do it.
+[00:02:54] Amazing. You believe in open source.
+[00:02:57] Yes, a lot. So I come from a tech background.
+[00:03:00] And I think we have used a lot of open source softwares there that help us.
+[00:03:06] The same reason I wanted that the algos that I am making, how simple it has become to write code through AI and all.
+[00:03:13] And yes, if we get time, we will show that in the podcast as well.
+[00:03:18] Yes, yes.
+[00:03:19] That is in my top agenda that how to make code using AI and how to make code for trading.
+[00:03:28] So I am very, very thankful to you that you accepted, that you want to share your knowledge openly.
+[00:03:34] Rahi, you have been an entrepreneur, exit, successful exit, and then a trader full-time.
+[00:03:42] This is like a dream for a lot of people, that by doing entrepreneurship, make money from the startup and then become a trader.
+[00:03:50] So we want to know your dream.
+[00:03:52] We want to know your journey so that more youngsters can dream the way you have done it.
+[00:03:57] So I think I will start with the start.
+[00:04:00] I did basic engineering from NSIT in 2006.
+[00:04:04] At that time, NSIT was changed to NSUT in Delhi.
+[00:04:08] And from college itself, I wanted to start a new startup.
+[00:04:12] I think at that time, this was way back in 2006.
+[00:04:15] At that time, startups and all were just starting.
+[00:04:19] I think InfoEd got listed in 2005.
+[00:04:22] And that was the time when tech companies were starting to get listed.
+[00:04:25] And the hype was getting built.
+[00:04:28] I worked in the industry for three and a half years.
+[00:04:31] First, I worked in a foreign company for a year.
+[00:04:33] It was a company called Yahoo.
+[00:04:34] But there I understood that this is a completely different market.
+[00:04:37] The Indian market does not work like that.
+[00:04:39] So then I came to InfoEd, which was like the pioneer at that time of the tech industry and all.
+[00:04:47] And I worked there for three years.
+[00:04:49] I understood things.
+[00:04:51] And then I did a startup.
+[00:04:54] That startup didn't work.
+[00:04:55] I did it for a year and a half.
+[00:04:56] That was funded by InfoEd.
+[00:04:57] I worked on it for a year and a half.
+[00:04:59] But that didn't work.
+[00:05:01] Left it.
+[00:05:02] Moved to another startup.
+[00:05:04] This startup was in the edtech domain.
+[00:05:06] I think whatever engineering is, it is about education and all.
+[00:05:11] So there is a very strong feeling about education.
+[00:05:15] And we thought that digital is coming.
+[00:05:17] So why not teach children through digital and do things.
+[00:05:21] And at that time, TestPrep, because TestPrep had a lot of data analytics and everything involved in it.
+[00:05:27] So we thought, why not make a product on it and give it to children so that they can get help.
+[00:05:33] There was a little struggle in the starting.
+[00:05:36] Because at that time, there was no internet, just 2013-14.
+[00:05:40] There was not much internet.
+[00:05:42] Videos did not work.
+[00:05:43] Videos came after Digio.
+[00:05:45] Came in 2017-18.
+[00:05:47] 16-17.
+[00:05:48] And at that time, our startup boomed.
+[00:05:52] And then came the COVID, where all the offline coaching got shut and everything.
+[00:06:00] For edtech industry, it was a boom.
+[00:06:02] And it sort of helped us to grow even faster.
+[00:06:06] Made very good products.
+[00:06:07] Earned a very good name among the children.
+[00:06:09] Eventually, due to the lack of fundraising, Times of India was our biggest investor.
+[00:06:16] And they had a lot of stake.
+[00:06:18] And we were not able to raise funds.
+[00:06:20] And we said, no, let's exit now.
+[00:06:23] And we took hold of Byju's, which was the number one edtech company at that time.
+[00:06:30] So we sold it.
+[00:06:31] This was in 2022.
+[00:06:34] And in 2023, I exited.
+[00:06:38] March-April 2023.
+[00:06:41] I took a little rest.
+[00:06:42] Because it had been 10-11 years since I started working.
+[00:06:44] Working 14-14 hours a day.
+[00:06:47] Working even on weekends.
+[00:06:49] Even if you are not working, it keeps running in your mind.
+[00:06:52] So I said, let's take a little rest.
+[00:06:54] Then I tried another startup for 6 months.
+[00:06:58] But that too did not fly as we were thinking.
+[00:07:01] So after that, I said what to do.
+[00:07:03] And I still had to earn a little money.
+[00:07:07] I don't know why, but it is.
+[00:07:09] Sometimes I think why it is.
+[00:07:11] So I thought that my elder brother used to trade in the derivative market.
+[00:07:18] Learned from him.
+[00:07:20] Then studied more.
+[00:07:21] Learned and then started trading.
+[00:07:24] So this was the overall journey.
+[00:07:27] I started full-time from January 2024.
+[00:07:31] It was a very good roller coaster ride.
+[00:07:34] But I think it's fun to be a trader.
+[00:07:39] I got the feeling of Mr. Sharma's son after listening to the story.
+[00:07:44] I have never been like a topper.
+[00:07:49] Like a backbencher.
+[00:07:51] But yes, it was like a jugaadu type.
+[00:07:54] The work was just to read something during the exam time and get it out.
+[00:07:57] It was like that.
+[00:07:59] That's right. Fantastic.
+[00:08:01] So when you started trading, did you also start with discretionary?
+[00:08:06] Or were you from a tech background? So the first initiative was to use tech to do trading.
+[00:08:13] Yes, so my trading is still very discretionary.
+[00:08:16] There are some parameters in Elgo that make it discretionary.
+[00:08:21] In terms of what values you have to do.
+[00:08:23] Strategy remains the same.
+[00:08:24] But the parameters that tune Elgo are discretionary.
+[00:08:29] They are still mostly there.
+[00:08:31] We will also talk about them when we discuss a couple of Elgos.
+[00:08:35] So that part is discretionary.
+[00:08:37] But I saw that if I want to save my time and learn other things, then I will have to automate some things.
+[00:08:43] And in that, my tech understanding and knowledge came in handy.
+[00:08:45] Where I coded the common same patterns and things.
+[00:08:49] So that my time is saved and I can do other things.
+[00:08:52] So whenever there is a boring day, even today I think of something new and start coding.
+[00:08:56] So even through market hours, by setting my alerts and coding,
+[00:09:00] I could spend more time in learning new things and doing new things.
+[00:09:04] Interesting.
+[00:09:05] Before we start the presentation, which you made very beautifully, there is a small question.
+[00:09:11] Stress.
+[00:09:12] Is it more for a discretionary trader or more for an Elgo trader?
+[00:09:17] There is a very obvious answer that Elgo has less stress, but I still want to get inputs from you.
+[00:09:22] No, I think discretionary traders have more stress.
+[00:09:25] But because you know that there is code in your support.
+[00:09:28] The speed at which it can execute and take trades, you cannot do that manually.
+[00:09:34] I think when you are in the market, more free trades are coming, something is happening. So if you have the setup right, you could match the speed of the market. You can do it manually in normal days, but there are certain days where you cannot match
+[00:09:48] the speed manually.
+[00:09:50] With Elgo, it gives you the power to match manually.
+[00:09:55] When there is a lot of volatility, my Elgos sometimes have 200-250-300 trades. So they automatically handle and manage themselves. So to be able to trade 300 manually I think is very difficult.
+[00:10:09] And the most important requirement of stable emotions is at the time of exit.
+[00:10:14] Yes.
+[00:10:15] I think ALGO plays a very crucial role otherwise you will never be able to cut the deal.
+[00:10:19] Yes, yes. And there will be a loss, you will say no, it will come back, it will come back.
+[00:10:23] But it will never come back, your loss will keep increasing.
+[00:10:26] When we talk about the ALGO system, it is an entire ecosystem from idea generation to execution.
+[00:10:35] From what you are saying, I feel there is still some discretionary in idea generation.
+[00:10:41] Idea strategy is not discretionary, the parameters that go into it, the numbers that help it, how much distance you have to trade or how much distance you have to cut or what things you have to keep, it depends on how far you are from the day of expiry
+[00:10:55] and all that.
+[00:10:57] You can also code it but I think I prefer that you put it in the input or put it in the config file and run it.
+[00:11:06] So it gives you a liberty to sort of change depending upon your open positions and other things.
+[00:11:14] Actually, I am on this subject. Hopefully, I will be with you till the end so I will be able to get more clarity.
+[00:11:21] Because I am still getting more questions in this statement but let us go through the presentation.
+[00:11:25] Sure, sure.
+[00:11:26] Hopefully, I will get the answer till the end.
+[00:11:28] Sure.
+[00:11:29] And the learners who are connected with me will watch this video till the end.
+[00:11:33] It is very difficult to find people like Rahi.
+[00:11:37] It is very difficult to get hold of him.
+[00:11:40] I am very active on Twitter and everything.
+[00:11:42] Anyone can ask me anything and I know what I do and how I do it.
+[00:11:47] So the shortcomings that I have, I clearly say that I don't know this or I can't do these things.
+[00:11:53] So I think, in this PPT, I have mostly shared my journey, my learnings and some trading algos that I use on a daily basis.
+[00:12:03] Yes.
+[00:12:04] So let's start.
+[00:12:05] Yes, sir.
+[00:12:06] Before starting, a quick disclaimer.
+[00:12:09] Whatever I am telling you, this is only for educational purposes.
+[00:12:12] There is no recommendation. I am not registered.
+[00:12:16] My past performance does not guarantee that I will keep taking gains in the future.
+[00:12:22] I think this is with everyone.
+[00:12:25] And whatever I share on Substack and X, that is all personal.
+[00:12:28] There is no financial advice.
+[00:12:30] I don't have any financial setup with anyone.
+[00:12:33] I trade and earn money.
+[00:12:34] And that is my source of income.
+[00:12:36] Okay.
+[00:12:37] I forget the fifth bullet.
+[00:12:39] Neither did I take any money from him, nor did he give me money.
+[00:12:42] I keep taking learnings from Vivek through his YouTube videos.
+[00:12:47] And today I got a chance to tell what I do.
+[00:12:50] So I am more than happy to share whatever I have learned.
+[00:12:53] Thank you, sir.
+[00:12:54] Thank you.
+[00:12:55] So let's start with the basics.
+[00:12:56] I think we have discussed the journey.
+[00:12:58] Engineer, founder, then a full-time trader.
+[00:13:01] Being an engineer, I have got a benefit that I know how to code.
+[00:13:07] And I think I would say that everyone who wants to do trading should learn coding.
+[00:13:12] I mean, after making a 6-month span, they should try that yes, I want to learn coding.
+[00:13:17] Because it is going to help you a lot in the future.
+[00:13:20] And it will keep increasing.
+[00:13:21] And with AI, it has become much more easier also.
+[00:13:24] So you can do it very easily.
+[00:13:25] If your basics are clear, then you can start any basic course.
+[00:13:29] And definitely learn coding.
+[00:13:31] I took an exit.
+[00:13:34] I won't say it was successful.
+[00:13:36] But it was a partial money-making exit.
+[00:13:38] A lot of my money was still in the form of stocks.
+[00:13:41] Which was in Byju's.
+[00:13:42] Which now I don't think it is anymore.
+[00:13:45] It has been converted to zero.
+[00:13:47] So the motivation was still there.
+[00:13:49] If that case had happened, I think I would not have done anything.
+[00:13:53] But now I said that no, a little more money should be made for that financial freedom and everything.
+[00:13:59] Why did I do this?
+[00:14:01] Because it is time-bound.
+[00:14:02] I mean, you start from 9 in the morning.
+[00:14:04] Start from 8.30-9.30.
+[00:14:06] And if you analyze it till 3.30-4, it will end by 4.
+[00:14:09] It's not.
+[00:14:10] Now I worked for so long.
+[00:14:13] But now because my family has also grown up.
+[00:14:16] My baby was born last year.
+[00:14:18] So I wanted to give more time to my family.
+[00:14:20] And this suits that requirement.
+[00:14:23] Secondly, it is scalable.
+[00:14:24] Whenever we run a business, if we want to scale our revenue, we need more people.
+[00:14:29] But this trading, if you have systems and things.
+[00:14:33] With the help of 2-3 people, you can scale very fast in terms of what return is getting.
+[00:14:39] Dependency on other people is very less.
+[00:14:42] There are brokers and a few other things on which you have dependency.
+[00:14:45] There are some tools on them.
+[00:14:47] And it gives you financial freedom if you do it profitably.
+[00:14:51] A lot of people ask me, how do I become profitable?
+[00:14:55] That is a very common question.
+[00:14:57] And we know that 93% people lose money.
+[00:15:01] 97% people can only get their brokerage and its cost.
+[00:15:06] So if you see, understanding the options and the maths behind it is very important.
+[00:15:12] How things work in the options is very important.
+[00:15:16] Zerodha Varsity is a very good module through which you can learn about options.
+[00:15:23] I also learned all my setup from there.
+[00:15:26] I must have studied roughly 150-200 hours.
+[00:15:28] I gave their quiz, understood what and how it happens.
+[00:15:31] With this, at least the basic maths became very clear.
+[00:15:35] If the index is moving, then if the price of the option is going like this, then why is it going?
+[00:15:41] What things can change?
+[00:15:42] IV is changing.
+[00:15:43] DK is coming in theta.
+[00:15:44] Why is DK not coming in theta?
+[00:15:45] What other parameters are affecting it?
+[00:15:49] Understanding that is very important.
+[00:15:52] If you don't understand it, then I don't think that you should become a trader.
+[00:15:57] At least in the option market.
+[00:15:59] Secondly, you should know the edge.
+[00:16:02] Why are you in the top 1%?
+[00:16:05] Because if you are up to 97%, then you are losing money.
+[00:16:10] If you want to make good money in the last 3%, then you have to be in the top 1%.
+[00:16:15] So it is very important for you to clearly define the edge you have.
+[00:16:21] If you know what is good and what is not, then you will trade with your strength, which is going to help you to become a profitable trader.
+[00:16:28] I will quickly talk about my things, in which I am good and in which I am not good.
+[00:16:35] For example, I say very clearly that I don't know how to read charts.
+[00:16:38] This is a very basic necessity.
+[00:16:41] I tried to learn a lot.
+[00:16:43] But I think I don't have that much time.
+[00:16:45] It's been 1.5-2 years since I started.
+[00:16:47] So hopefully in some more time, and I want to learn very well.
+[00:16:51] Technical analysis, reading charts and everything.
+[00:16:53] And with that, I can trade in the short term.
+[00:16:56] Obviously, I can trade better and make a lot of money.
+[00:16:59] If you do this well.
+[00:17:00] I have seen, I follow a lot of traders who make a lot of money.
+[00:17:04] Who are very good at these 3 things.
+[00:17:07] But this is something that I have to learn.
+[00:17:09] So I never take a firm call in my trade.
+[00:17:14] That the market will go here or there.
+[00:17:16] I mostly adjust my trades.
+[00:17:18] Because if I am not good in this, there is no point in taking a call.
+[00:17:21] I am good in macro view.
+[00:17:23] So I can predict the view of 6 months, 9 months, 12 months very well.
+[00:17:27] I am good in this.
+[00:17:29] Depending on what geopolitical situation is going on.
+[00:17:32] What else is going on.
+[00:17:33] I think this is easier to do.
+[00:17:35] I understand option math.
+[00:17:36] And I can code my trades.
+[00:17:38] With which I can be free and learn other things.
+[00:17:40] So these are my 3 good points.
+[00:17:43] And in my trading style, you will see these 3 things.
+[00:17:48] I will tell you about this basic trading style.
+[00:17:50] I am an option seller.
+[00:17:51] And I earn money through theta.
+[00:17:54] So DK is my best friend.
+[00:17:57] And I have also written a post on the sub stack.
+[00:18:00] How do you see Greeks and what do you see?
+[00:18:02] Like I say delta and gamma.
+[00:18:04] So I stay away.
+[00:18:05] I run away from them.
+[00:18:06] When they move, I have a problem.
+[00:18:09] I have to adjust.
+[00:18:10] I can't understand them.
+[00:18:11] And that is because of my reading charts and technical analysis.
+[00:18:14] I am not very good.
+[00:18:15] Correct.
+[00:18:16] Because my macro level view is good.
+[00:18:21] So I keep long term options.
+[00:18:23] So I must have sold options 9 months, 12 months away.
+[00:18:27] And I also work through it.
+[00:18:31] So that is because of the macro view.
+[00:18:33] And those who have a good macro view, I am sure they should trade in leaves.
+[00:18:38] Rahi, I will ask you something in between.
+[00:18:42] Yes, please.
+[00:18:43] The term macro view is quite macro.
+[00:18:47] So can you tell us more about it?
+[00:18:49] What do you see to make a parameter view?
+[00:18:52] I will give you a basic example.
+[00:18:54] If you look at the last 4-5 years of Nifty, it has run at a very high speed.
+[00:19:01] You can say that at the start of this year, everyone started talking about it.
+[00:19:08] I was talking about it since last year, March-April.
+[00:19:11] It is unsustainable.
+[00:19:12] The speed at which it is running at 25%, this is unsustainable growth which is there.
+[00:19:19] Which gave me a view that either the market will stay here or it will go down a little or it will stay stable.
+[00:19:25] Which allowed me that whenever the market is going near its all-time high or a little below that, then you can sell call options from a distance.
+[00:19:34] And you can earn money in that.
+[00:19:36] Or like now my short setup is getting a little less because of GST setup, rate cuts, and other things are happening.
+[00:19:47] So the market has fallen a little and the time has also been corrected.
+[00:19:50] So now my short setup is not left.
+[00:19:54] So it's a very basic macro level view of what will be the growth.
+[00:20:00] over a period of 9 months, 12 months. Like last year, I think in August-September, we knew that quarter 1 and quarter 2 results will not be so good.
+[00:20:11] This year, which will sort of push market back and whatever happened, that's why those call options gave a good profit.
+[00:20:24] Interesting, you make a macro view, but you don't confirm the chart and sell the call and put.
+[00:20:31] I mean I don't know how to do that, but I know how to adjust them.
+[00:20:36] Like if I talk, I was shorting from April last year and the rally from April to July, whatever my options played, but because of the algos and everything, I was able to adjust them by selling put in the short term.
+[00:20:52] And even with that loss, I was able to make that money in April, May, June, July last year also.
+[00:20:59] Even my M2M was not at that much of loss and I was constantly making money by selling short-term puts.
+[00:21:07] So I was taking that home, but my M2M was still not very negative.
+[00:21:12] And that was when there was a wild rally, which I never expected.
+[00:21:17] You are making a macro view, so the market is always thinking 6 months ahead.
+[00:21:24] But the view you are making, somehow...
+[00:21:28] I believe in mean reversion theory. When there is a euphoria in the market, it goes 2-3 steps ahead from where it should be.
+[00:21:42] And you can identify that now when it has gone 3 steps ahead, it is a good time to sort of go out and make money by selling call options, which I did.
+[00:21:53] And to be able to adjust that.
+[00:21:58] For example, I don't get scared while selling a call of 26,000, 27,000 or 28,000 today because it is above 4,000 or 5,000 points.
+[00:22:07] But if that share comes to 1,000 points, then by selling puts, I will be able to adjust my M2M loss and make a profit.
+[00:22:18] And that's what my style of trading is because I don't know charts and technical analysis very well.
+[00:22:23] That's the only thing I could do.
+[00:22:26] The market is such a beautiful platform, everyone has their own way of doing things and still we all survive.
+[00:22:34] And you should know what is right for you and what you can handle.
+[00:22:41] I will also talk about the algo that I made. I made it because I had a loss at one time.
+[00:22:49] So I said that this will not work. Now I make one more algo which was a trend following algo because I believed in mean reversion.
+[00:22:56] So after that, my monthly losses were almost over when I made that trend following setup.
+[00:23:03] We will talk about that later.
+[00:23:05] Automating algos, adjusting open positions, because I have a good understanding of math and all that, I was able to do that nicely.
+[00:23:13] And I was able to automate algos so that I could reduce my personal bias.
+[00:23:19] I had a loss when I stuck to my options till the end that it will not come back.
+[00:23:25] And it gave me a big loss and it was a learning also that this does not happen.
+[00:23:30] The market moves in its own way, you have to adapt.
+[00:23:33] The market will not adapt to your corresponding, you will adapt to the corresponding of the market.
+[00:23:38] I take low-risk trades, my return is roughly 2.5-3% of the month.
+[00:23:42] I am not a buyer who makes 100% or 40% or 50% monthly return.
+[00:23:48] I am a very low-risk, 0.3-0.4 delta, I am a seller who sells around 0.3 delta.
+[00:23:57] Okay, okay.
+[00:23:59] So today we will talk about these 3 basic things and I have not learned this from anywhere.
+[00:24:05] I think my engineer brain saw what we can do in the market and what I can make according to that.
+[00:24:11] And how I made it and then implemented it.
+[00:24:16] So first of all, let's talk about wave extractor algo.
+[00:24:20] What is this? It is very good in non-directional play.
+[00:24:22] I saw the market, it goes up and down.
+[00:24:25] If you see in a week, it will go up and down.
+[00:24:28] How to make money in this?
+[00:24:31] This is a very good option.
+[00:24:33] You sell C, then buy, sell again, buy again and you can keep on making money.
+[00:24:40] I said okay, let's quote this.
+[00:24:43] Take a line in the middle.
+[00:24:46] How much money will go up above that, you sell it.
+[00:24:49] How much will go up and down, then you buy it.
+[00:24:52] Then sell it, then buy it.
+[00:24:54] So he was doing it right.
+[00:24:55] Till the market became strongly trending.
+[00:24:58] 60-65% days are non-directional.
+[00:25:04] Which are going sideways.
+[00:25:06] And you can make decent money in this.
+[00:25:09] And one more good thing in this is that your margin keeps on dropping.
+[00:25:12] You sell, then buy, then the margin drops.
+[00:25:14] Then you get that profit.
+[00:25:15] Then you sell, then you get it.
+[00:25:17] And in this way, you can make money in your non-directional setup.
+[00:25:24] So when I was talking about parameters in the beginning.
+[00:25:28] So in this, my current nifty future which I am tracking.
+[00:25:33] How many points above that I have to sell.
+[00:25:35] And how many points below that I have to buy.
+[00:25:38] I can configure this.
+[00:25:39] And how much quantity I have to buy and sell.
+[00:25:42] I can configure that.
+[00:25:43] So in this example, we have shown that.
+[00:25:47] Assume this is 50.
+[00:25:48] This was the middle line.
+[00:25:49] We started our algo.
+[00:25:50] If 50 points go up, then you sell 4 lots of nifty.
+[00:25:55] And then what happens after that.
+[00:25:57] As soon as you sell this line.
+[00:26:00] Then one more sell order is placed.
+[00:26:02] Which will go up more.
+[00:26:03] And buy order will go down.
+[00:26:06] So what will happen with this.
+[00:26:07] If the market is still a little bigger.
+[00:26:09] Then one more sell will happen.
+[00:26:10] And if this sell also executes.
+[00:26:12] Then it will stop.
+[00:26:13] It will allow only 2 consecutive sells.
+[00:26:16] And then the buy that you have after that.
+[00:26:18] It will shift here somewhere in the middle.
+[00:26:20] Then if the market retraces a little.
+[00:26:22] It will buy.
+[00:26:23] One of your lot will be empty.
+[00:26:24] It will give you profit in that.
+[00:26:25] If it goes down more.
+[00:26:26] Then it will buy one more.
+[00:26:27] If it goes up again.
+[00:26:28] Then it will buy one more sell.
+[00:26:29] So as much wavy motion will be in the market.
+[00:26:32] It will keep making money for you.
+[00:26:35] It was a very simple, very obvious algo.
+[00:26:38] I started making good money from it in the starting.
+[00:26:43] But then the trending came.
+[00:26:45] Because now it has sold 2 times.
+[00:26:48] And your trend will continue to go in loss.
+[00:26:53] Then to evolve that setup.
+[00:26:56] So we have open sourced this algo.
+[00:27:00] In this, in the link.
+[00:27:01] We will share the PPT with your audience.
+[00:27:04] So that they can go and look at it also.
+[00:27:07] Then we made.
+[00:27:09] Let me clarify in a minute.
+[00:27:11] There are a lot of people here.
+[00:27:13] The strategy.
+[00:27:15] They love strategies.
+[00:27:19] If you get it, you get it.
+[00:27:21] So let's clarify them.
+[00:27:22] Listen to the whole thing.
+[00:27:24] Don't just go and implement the strategy.
+[00:27:26] Because this journey is telling us.
+[00:27:28] That I did this.
+[00:27:30] And there was money in it later.
+[00:27:32] Okay.
+[00:27:34] And second.
+[00:27:35] A lot of people keep asking me.
+[00:27:37] You tell me the strategy.
+[00:27:39] I always say.
+[00:27:41] You understand things.
+[00:27:43] You can make your own strategy in the market.
+[00:27:45] If you understand things.
+[00:27:46] And do.
+[00:27:47] It is very important to understand.
+[00:27:49] Why is this strategy working?
+[00:27:51] How is it working?
+[00:27:52] And if this strategy.
+[00:27:53] No strategy can be 100% foolproof.
+[00:27:56] There will be a time or type in the market.
+[00:27:59] When your strategy will fail.
+[00:28:01] To avoid that.
+[00:28:03] If you know how the strategy is working.
+[00:28:06] Then you can avoid it.
+[00:28:08] And still you can make profit.
+[00:28:10] So you understand the strategy.
+[00:28:12] Understand things.
+[00:28:13] Rather than just blindly copying.
+[00:28:15] And think that money will be made from it.
+[00:28:17] It is not that easy to make money.
+[00:28:18] After copying.
+[00:28:19] And money is starting to be made.
+[00:28:21] So when the trend comes.
+[00:28:25] Now assume this was your wave.
+[00:28:28] You sold it here.
+[00:28:29] You bought it back here.
+[00:28:30] You have run the wave algorithm.
+[00:28:32] Then you sold it here again.
+[00:28:33] Then you sold one more call.
+[00:28:35] You are selling a call here.
+[00:28:36] Because your wave is running.
+[00:28:37] So now when you do this.
+[00:28:39] Now the market has gone here.
+[00:28:40] So both of your calls have gone in a lot of loss.
+[00:28:42] You made a profit from the wave once.
+[00:28:45] But the next time you sold a CE.
+[00:28:47] One more call was sold.
+[00:28:48] And its delta will keep increasing.
+[00:28:50] Even if you are selling 0.3.
+[00:28:54] Then it was found that after 50-60 points.
+[00:28:56] Your call per movement will increase a lot.
+[00:29:00] Then we thought.
+[00:29:03] Why not make a trend following algo.
+[00:29:06] Which is very basic.
+[00:29:08] People still do it manually.
+[00:29:10] But I think what they do.
+[00:29:11] They will sell put only once on it.
+[00:29:15] Correct.
+[00:29:16] Means the price action came.
+[00:29:17] Yours came and yours left.
+[00:29:19] You sold the put in bulk.
+[00:29:22] Right here.
+[00:29:23] In the setup.
+[00:29:25] In this algo.
+[00:29:26] What happens many times.
+[00:29:27] Because stop-loss hunting.
+[00:29:29] Then it comes back.
+[00:29:30] And it gives you loss.
+[00:29:32] In some cases.
+[00:29:33] Means your stop-loss hits.
+[00:29:35] What does it do?
+[00:29:36] As the market moves up.
+[00:29:38] You keep selling your PEs.
+[00:29:41] If it is not going up.
+[00:29:42] Then it will stop there.
+[00:29:43] Will not sell anymore.
+[00:29:44] But if it is increasing.
+[00:29:46] Then after a particular distance.
+[00:29:48] If your underlying asset.
+[00:29:49] Whether it is Nifty Future or Spot.
+[00:29:51] You increased 20 points.
+[00:29:54] I will go and sell it.
+[00:29:56] It is a very simple algorithm.
+[00:29:58] You go and sell.
+[00:30:00] on every 20 point increase you sell one put, so we implemented this trend following and when this and wave extractor both are combined and because we make money from theta, then it is very easy for us to make money, even if the market goes in trending,
+[00:30:20] we give loss to both but they sell put and give so much profit that their loss is offset and then we have some manual adjustments which we are giving you in loss, if it comes in the money then you can convert it in theta by making straddle or martangle
+[00:30:40] or do something so that you can convert that loss in profit in that expiry, this algo is also our open source available and in this what does algo do, after 3 or 4 trades which are configurable, you can close your old ones in profit so your old flows
+[00:31:00] are getting closed, your margin is also getting free and you are working in profit in this trend following ok, so you tried this separately and then merged both, yes, so when you run both together, if wavy is running then money is made in wavy if it breaks
+[00:31:21] any resistance then you can follow through your put or call depending on whether it is going up or down, you can sell it and go ok, so these two are very basic algos, but they work when your gamma does not put any impact which is before 0 DT so I analyzed
+[00:31:41] 3-4 months back that my maximum loss was on Thursdays because market is going up and down and I think jane street was one of the culprits who were playing in this setup, so I said that 0 DT does not trade, my system is correct but 0 DT does not trade,
+[00:32:02] so till date I follow 0 DT I do not trade, I cut my positions on wednesday only, because you can adjust till wednesday, if you go to adjust in 0 DT then your margin will fly so fast that you will not even know that your margin has flown, there is not
+[00:32:22] much value left in theta, so it is not beneficial, so I saw people making money
+[00:32:34] I think we saw SEBI's report that jane street is making so much money and they were mostly trading 0 DT, so I said can we catch this and can we write code for this, SEBI openly told us how they do it, first they buy it, take it up and then sell it and
+[00:32:53] dump it they take loss in stocks but they make a lot of money by buying in options, by selling it for 100-200 rupees, so whenever they load up the options so you can find it in open interest that options are loading up very fast and underlying asset is
+[00:33:13] not moving, so if you are seeing in nifty your nifty is not moving but your options are loading up very fast, so once I was sitting in the market and I saw that there was a spike in options and their prices also started moving upside down, market is going
+[00:33:32] up but put prices started increasing and this generally happens when it is loading up so we are buying put very fast and these big players do it, so can we catch OI jump through our port, so I said let's make a basic setup if 30% OI jump comes, 1-2 strike
+[00:33:52] of ATM, so it means someone is loading up and if there is no movement in underlying asset then it is definitely loading up, so if we can catch them like this, because these are high return trades, if you catch them correctly then 1-10, if not 1-10 then
+[00:34:11] 1-4 or 5 is very commonly made, if you buy ATM then also 1-4 or 5 is easily made
+[00:34:21] so by catching this, and I was thinking what happens if I see, how people make so much money by trading in 0DT, the amount you are making in a week is being made in 0DT, so what can we do for this and the idea was very simple, you can't market move you
+[00:34:39] can only catch that someone is going to market move through data and through that, so I said I will work so hard that I don't even trade in 0DT, I don't even make money, but I just wanted to experiment on this, so I said no, I will try but I will get
+[00:34:57] it written by AI, AI's coding agents have become very good, so I will get it written by AI and see what AI does, so now we will show one more example where we will quickly make its code through AI and see how it gives in this gamma blast setup.
+[00:35:15] So, Google has made a very good multi-agent setup called Jules, when you see LLM, it has a single chat interface which is tuned to answer your questions, so this Jules is a multi-agent coding setup, where you say these are APIs, you read these APIs and
+[00:35:36] work, so it goes and searches, reads them, understands them, then it can also code, this is also integrated with your getup, so whenever you code, the things you need, the agents you need, they are all pre-built in this, everyone gets 12-15 limits daily,
+[00:35:57] I don't think they are ever utilized, and one task means that you can do a project through this, it opens up like a chat window, you can map it with GitHub or any other coding repository, we have mapped it with our trading algo getup, so this is our open
+[00:36:19] source setup, we have mapped it in that, now we will put the saviour or survivor strategy in today or tomorrow, which is our wave extractor, it is almost complete to put in this, so now through AI, we will try to make a gamma blast setup in this, so through
+[00:36:40] AI, it happened that you can code in English, tell it in English what I want, it will do it for you, so I told it that I have made this already, let's see what return it gives, I want to track OI, ATM, 2 slightly ATM and 2 slightly OTM options, for all
+[00:37:02] or put, I want a live table which is updated every minute, in the OI setup, make 3 tables, one for put and one for call, and one for the change that is happening in nifty, so in put and call, you have to put 7 rows and 5 columns, in every row, there are
+[00:37:23] 5 rows, ATM-2, ATM-1, ATM-1, ATM-1, ATM-2, ATM-2 strikes, you have to put, columns you have to put 3 minutes, 5 minutes, 10 minutes, 15 minutes, 30 minutes, 3 hours, in every cell, you have to show percentage change, absolute change of OI, so a table
+[00:37:44] will be made in which ATM strikes will be there in rows, and in columns, how much change in OI in 3 minutes, how much change in OI in 5 minutes, percentage wise it will tell, if it is more than 10% in 3 minutes, then rate it, 12% in 5 minutes, 30% in
+[00:38:05] 15 minutes, so basically rate it, fetch the OI, use the historical data API, kite connect, put an alert, if there are many cells in which the OI criteria, in 30% cells, if the OI criteria is meeting, then put an alert and ring the bell, means whatever
+[00:38:26] you say to it, it does, whatever you want,
+[00:38:36] make a table of Nifty, in which you have to put the price of Nifty, in 3 minutes, 5 minutes, 10 minutes, 15 minutes, 30 minutes, show the price changes, so it is making 3 tables, 1 for put, 1 for call, 1 for OI change, and 1 for Nifty change, and tell
+[00:38:54] it to read the API from here, and I have given the link of our repository in which we have put the code, in which the good thing is that the way our code is already written, in the same way write a new code, so in this there is a config file, in which
+[00:39:12] you can put configs, means what I was talking about, at what distance what you have to do, like how much CE quantity you have to sell, how much gap you have to sell, all this is a setup of config files, which is put in it, so it will also make its own
+[00:39:30] config file, you show it, run it, now I have written only plain English, where did you take the data from, Raheel? This is from the historical API of Kite, so it will fetch data from the historical API of Kite.
+[00:39:47] Ok, so historical API is open to anyone to get data? I think Kite is 500 rupees monthly. Ok, so you must have logged in to your system.
+[00:40:00] Yes, I have this system activated, so it will take from that only.
+[00:40:07] Then on Jules platform, Jules will have to say that it is this one.
+[00:40:11] Because what does activated mean? How will it be activated in Jules?
+[00:40:14] No, no, Jules will do it by using this documentation.
+[00:40:20] It has an API key and a secret key, which we get from Zerodha.
+[00:40:24] When we update that, then this documentation is of Zerodha, which is available to everyone.
+[00:40:30] In this, the API key, the request token and the secret key, these three things have to be updated in the code later.
+[00:40:38] When this code is complete, we will update these three things from Zerodha, then it will get its access.
+[00:40:44] I understood.
+[00:40:45] So we told it that this is the API and you do this, now make a plan that how will you code this?
+[00:40:53] Okay.
+[00:40:54] Now it will go by itself, think, read.
+[00:40:56] So now it is building a virtual machine.
+[00:40:59] So it is booting its own system.
+[00:41:01] It will try different things in it.
+[00:41:03] It will also clone it.
+[00:41:04] It will clone our repository.
+[00:41:07] It will read how we have coded it.
+[00:41:09] Because you want that the way your code is running, the same way your code will keep writing in the future.
+[00:41:14] It will be easy for you to read, easy to understand, easy to do other things.
+[00:41:17] So now it is cloning this repository in its computer.
+[00:41:22] And now you leave it and go, in 10-15 minutes, it will do all the work for you and make a code for you.
+[00:41:28] And it will say that I will make another branch for you in GitHub, you can publish your code there.
+[00:41:32] They do that too.
+[00:41:35] So now for those who have a basic understanding of writing code, if I know how to write code, if it takes me 2-2.5 days just to write this, it will do it in 15 minutes.
+[00:41:49] Have you checked its accuracy?
+[00:41:51] Yes, I have made this GammaBlast from this.
+[00:41:54] I had to tweak something at one point or the other.
+[00:41:58] I think it took a wrong key.
+[00:42:01] But apart from that, this was seamless.
+[00:42:05] If I myself go to write this much code and this quality of code,
+[00:42:09] I would not have been able to write this quality.
+[00:42:11] Because I am not such a good engineer.
+[00:42:13] It's been a long time since I have written good code.
+[00:42:16] And a lot of things have changed.
+[00:42:18] But this writes very good code.
+[00:42:22] It writes very readable, very configurable code.
+[00:42:26] And it is error-free. It is mostly error-free.
+[00:42:29] So sir, what is the difference between Jules and ChatGPT?
+[00:42:32] Very layman question I am asking.
+[00:42:34] So you can consider ChatGPT as a basic, that too is a multi-agent setup, but it is not optimized for coding.
+[00:42:42] It cannot interact with your GitHub like this.
+[00:42:45] It will make a very proper plan for coding.
+[00:42:48] You can change things in the plan.
+[00:42:49] So he gave us a plan.
+[00:42:51] He said, first I will make an environment.
+[00:42:53] I am in the broker.
+[00:42:55] You have not fetched historical data in your zero-third API.
+[00:42:58] Because it was not needed yet.
+[00:43:00] Now to fetch historical data,
+[00:43:03] I will have to do it with an API.
+[00:43:05] So I will do this.
+[00:43:06] Then I will make a configuration file.
+[00:43:08] And this config is being made because it has already been made in our code.
+[00:43:13] So I will write the same code.
+[00:43:15] And this was,
+[00:43:17] I will not write my code randomly.
+[00:43:20] Then he said,
+[00:43:22] I will do boilerplate data fetching.
+[00:43:24] Then I will put logic after that.
+[00:43:26] After that, I will put a loop at 3 minutes and 60 seconds.
+[00:43:29] So the proper guidance we gave him, he said, I will do all that.
+[00:43:33] Third, I will make a table in which
+[00:43:35] I will put nifty call and make a table.
+[00:43:36] I will run it live every minute.
+[00:43:39] This is called a rich table.
+[00:43:41] Rich is a Python library through which a live table can be made.
+[00:43:45] I will use rich to implement the library.
+[00:43:49] And then I will put an alert.
+[00:43:52] I will put the sound you said.
+[00:43:55] I will do all that.
+[00:43:56] And then I will verify the code.
+[00:43:58] And then I will submit.
+[00:43:59] So this plan is looking good.
+[00:44:00] I think it is a very good plan.
+[00:44:03] Now you think, if you are going to hire a software engineer, then he will make this plan after a day.
+[00:44:09] In 3-4 minutes, in 5 minutes, he made the whole plan in a very good setup.
+[00:44:15] Now every point that he told, he is going to work on it.
+[00:44:19] First, I will set up a dependency.
+[00:44:21] I will make an environment.
+[00:44:22] After that, I will put this extensibility in your broker 0da.py.
+[00:44:28] So now I think he will work for another 5-10 minutes.
+[00:44:32] Then he will show what all I am changing in your files.
+[00:44:36] And then you can publish it in your GitHub.
+[00:44:40] So he did something.
+[00:44:42] It was published in GitHub.
+[00:44:43] Then it is like a sharing of code.
+[00:44:47] But how will I use it for trading?
+[00:44:50] You can just clone it.
+[00:44:53] It will be run by giving GitHub and Python commands.
+[00:44:56] Rahim, I am a little...
+[00:44:58] No, I understand.
+[00:45:00] It may be a little difficult for you.
+[00:45:03] No, no, no.
+[00:45:04] If I share my screen once...
+[00:45:07] One minute.
+[00:45:08] I share my screen.
+[00:45:09] Yes.
+[00:45:10] But you also tell that process how to trade from GitHub and Python.
+[00:45:14] Yes.
+[00:45:15] Like I was a survivor, the same thing I was running today.
+[00:45:20] Okay.
+[00:45:21] So this was the survivor.
+[00:45:22] When the trend follows, a resistance breaks, then you go ahead and sell it.
+[00:45:27] And it will go on selling.
+[00:45:28] So I will show you its file.
+[00:45:30] It is telling which expiry it is for, which is for the August 21 expiry.
+[00:45:35] Okay.
+[00:45:36] This is the symbol, August.
+[00:45:37] How many gaps should I start selling after?
+[00:45:40] When my starting point will come, after how many gaps of this, should I sell a lot one by one?
+[00:45:45] This is that part.
+[00:45:46] How much quantity should I sell?
+[00:45:47] This is it.
+[00:45:50] And it has a reset gap and one or two more advanced concepts.
+[00:45:55] I think if we go to explain this, let's leave it.
+[00:46:00] I will just sell, pick up the market order, and finish mine.
+[00:46:04] Now when I have defined this config file, now if I go to execute it, then I don't have anything.
+[00:46:09] Python 3.8,
+[00:46:10] I mean I have a 3.8 version.
+[00:46:11] Survivor.py is there.
+[00:46:13] If I run this, then it will ask me for a request token.
+[00:46:20] Request token is basically the zero that has been given to you.
+[00:46:23] The one that was zero will give it to me.
+[00:46:25] Okay.
+[00:46:26] I think this is my request token.
+[00:46:31] I will paste it here.
+[00:46:32] It will start running.
+[00:46:35] Although there are aftermarket hours, so there will be no movement in it.
+[00:46:39] So Nifty is closed.
+[00:46:40] Now it is fetching the data and bringing it.
+[00:46:42] Through the guide.
+[00:46:43] And this tick is going on.
+[00:46:45] I mean the zero is being given to us that there is a change.
+[00:46:48] Although it is not changing because there are aftermarket hours.
+[00:46:50] So Nifty is typically at 24,980.
+[00:46:54] Now this setup is complete.
+[00:46:56] It is just running.
+[00:46:57] As soon as Nifty goes below 24,920, 10 points, it will send a call.
+[00:47:04] So you will get this information?
+[00:47:06] Yes.
+[00:47:07] It will show you right here.
+[00:47:09] For example, one minute.
+[00:47:12] When it would have sold, it would have shown.
+[00:47:15] It shows right here.
+[00:47:16] Okay.
+[00:47:17] So it ordered a place.
+[00:47:19] On a market type of 300 quantity.
+[00:47:21] And I executed it.
+[00:47:23] Okay.
+[00:47:25] So as soon as it came above 980, 990,25, 980,35, 990,2, 990,1, 24,990,1.
+[00:47:32] As soon as it came, it said that I have gone above 10 points from 24,980.
+[00:47:36] You execute it.
+[00:47:38] So it executed that trade of 300 quantity which was configured in the config.
+[00:47:43] Okay.
+[00:47:44] So when the code
+[00:47:47] gets settled, you just run it in the config and it will start working on its own.
+[00:47:54] Okay.
+[00:47:55] And it will start executing on its own.
+[00:47:57] I am asking a very basic question.
+[00:47:59] You generated this code and then put it in Python.
+[00:48:03] How does Python talk to Zerodha?
+[00:48:07] Zerodha has given a client of Python.
+[00:48:10] Okay.
+[00:48:11] So as a library, it comes in our Python code which does all the work.
+[00:48:17] Okay.
+[00:48:18] We don't have to write any code.
+[00:48:19] If we have to place order, then it said just call the function of place order.
+[00:48:23] In which parameters are given, you have to put a limit order, for which symbol you have to put, how much quantity you have to put, you give it to us, we will place it for you.
+[00:48:30] Got it.
+[00:48:31] And the callback keeps coming.
+[00:48:32] It keeps telling whether it was executed or not.
+[00:48:34] If there is a limit order, as soon as it is executed, it will tell you.
+[00:48:37] Okay.
+[00:48:38] And you are talking to the Zerodha server through the internet, right?
+[00:48:42] This is your tool.
+[00:48:44] Okay.
+[00:48:45] Got it.
+[00:48:46] In this, I think, some changes have come.
+[00:48:48] Elgo trading, that too may not be complete.
+[00:48:50] For Elgo trading, you need static IP.
+[00:48:52] Yes.
+[00:48:53] If you are working from office, then you can get it easily in office.
+[00:48:57] But if you are doing it from home, then your ISPs give static IP.
+[00:49:00] Correct.
+[00:49:01] So you have to put that static IP somewhere in Zerodha, so that no other IP can execute your trades.
+[00:49:08] That is security.
+[00:49:09] Correct.
+[00:49:10] So now, let's come back to this.
+[00:49:13] In this, it was configuring its own normal system.
+[00:49:18] Then it said that in the Zerodha file, because you did not put the historical API, so I am creating a new function to fetch historical data.
+[00:49:29] It created that.
+[00:49:30] It added these two lines, the green ones.
+[00:49:32] To fetch the historical data in our already code,
+[00:49:36] I have to add two lines.
+[00:49:37] It added that in Zerodha.py.
+[00:49:40] Hmm.
+[00:49:41] Then it created a config file.
+[00:49:44] Just like our config file.
+[00:49:46] What symbol do you have?
+[00:49:48] What initial symbol do you have?
+[00:49:50] Like we just talked about, what expiry do you want?
+[00:49:55] It has a rough expiry, strike count, color threshold.
+[00:50:00] If it is more than 10%, then you can change the color threshold to red in 3 minutes.
+[00:50:03] The input that we gave him was corresponding to that.
+[00:50:06] He made a config file. If we make it 18 here, it will automatically change in the code.
+[00:50:11] When it will go to run the code.
+[00:50:13] Then he made this final file, which he has written the whole file.
+[00:50:18] Let's go through it once.
+[00:50:24] You only go through it, I don't understand anything.
+[00:50:27] Mostly this is correct.
+[00:50:29] He has written a basic function to fetch the ATM strike.
+[00:50:34] Take out the difference, whoever is closest will get the strike.
+[00:50:39] Because we have to take out the ATM and get the setup for 5 strikes.
+[00:50:47] Then he brings the details of the option for those 5.
+[00:50:51] For call, put and then he is putting it in his dictionary.
+[00:50:56] In which he is storing all the OIs.
+[00:51:01] Then he calculates the change.
+[00:51:05] Because we wanted to know how much change is happening in every cell.
+[00:51:08] So how much current is flowing now.
+[00:51:10] What were the values 3 minutes ago, 5 minutes ago, 15 minutes ago.
+[00:51:14] He is taking out the difference between them.
+[00:51:17] Looks like he is making a table.
+[00:51:21] In the table, the strike, the current OI is 3 minutes, 5 minutes, 10 minutes, 15 minutes, 30 minutes, 3 hours.
+[00:51:26] He is putting the proper values, fetching and filling.
+[00:51:31] To write so much code, a good software engineer can do it easily for 2-2.5 days.
+[00:51:37] I am talking about a very good software engineer.
+[00:51:39] It will take a lot of time, sir.
+[00:51:41] It will take a lot of time. He has written a code of 350 lines.
+[00:51:44] If you go to run it, it will run after 5-10 minutes of debugging.
+[00:51:53] That's why I said in the starting that it is very important to know the code.
+[00:51:58] Now the time it took or they used to say that it is cumbersome.
+[00:52:01] That work has become very easy.
+[00:52:03] Understood.
+[00:52:04] But if you have to go to debug it, then you will have to run it once.
+[00:52:08] If there is some error, then you will run it.
+[00:52:10] How will you run it?
+[00:52:12] We will publish it in Github and clone it.
+[00:52:15] Similarly, Python 3.8, OITracker.py, it will run automatically.
+[00:52:20] And it tells that I am making a new branch.
+[00:52:24] I am publishing you in this. Publish it. Publish it.
+[00:52:27] So it will take you to Github in a new branch.
+[00:52:31] I have not put it in the main branch.
+[00:52:33] Because now to test it.
+[00:52:35] I am asking a stupid question. Don't mind.
+[00:52:39] No, no, please.
+[00:52:40] What is Github?
+[00:52:41] So like I wrote the code.
+[00:52:44] And I am working with a team of 3-4 people.
+[00:52:47] So my code is lying with me.
+[00:52:49] His code is something else.
+[00:52:50] He has changed something somewhere in a file.
+[00:52:52] It is lying with him.
+[00:52:53] And if my laptop crashes or something happens, then there is a problem.
+[00:52:57] So people said, first of all, we will put the code on the cloud.
+[00:53:00] So now your code has gone to one place.
+[00:53:03] Which is the cloud.
+[00:53:05] Which means that if you can access your laptop from any other laptop, then you will see the same code.
+[00:53:09] So now we are looking at the code on the cloud.
+[00:53:11] Which is in Github.
+[00:53:14] And there are many things in it.
+[00:53:17] Like if two different people are working on the same code, then it shows the difference.
+[00:53:22] That he wrote the code here, he wrote it here.
+[00:53:25] So by merging it, you can define the final code once and work further.
+[00:53:29] So there are many companies in which there are 25-30 people who are working on the same piece of code.
+[00:53:36] So everyone can put it in their own branch, then merge the branch and make a common final code and take the work forward.
+[00:53:43] If everyone has a different code, then merging it and doing all that is very problematic.
+[00:53:48] This work helps you.
+[00:53:50] Like there is Google Doc.
+[00:53:51] For document, Excel sheet, etc.
+[00:53:53] Similarly, there is Github.
+[00:53:54] Absolutely.
+[00:53:55] Just Google Doc is always active.
+[00:53:57] There is only one version.
+[00:53:58] Suppose you made another version of Google Doc.
+[00:54:01] Something worked in it.
+[00:54:02] Someone else made another version.
+[00:54:04] Then you can merge it very easily because of Github.
+[00:54:07] Understood, sir.
+[00:54:09] So all the IT professionals who are in tech, in trading, they all must be using Github.
+[00:54:15] Mostly.
+[00:54:16] I mean, they must be doing it in the cloud to store something.
+[00:54:20] Now Microsoft has bought it.
+[00:54:22] It has a very good setup.
+[00:54:26] I don't think.
+[00:54:27] In our time, when we used to code, someone used to host on the local cloud.
+[00:54:31] SVN and different things used to come.
+[00:54:33] But I think now Github is like the go-to to keep the code and publish the code.
+[00:54:41] Whatever you want to make private or public, make it.
+[00:54:43] Understood, sir.
+[00:54:44] And execute it.
+[00:54:46] Understood.
+[00:54:47] So you used AI to make code and hosted it in Github.
+[00:54:51] Now you generate Python file from Github and trade it directly.
+[00:54:56] He has generated the Python file.
+[00:54:58] Okay, he did it.
+[00:55:01] We have stored it here.
+[00:55:03] So that if someone wants to test it, from the team, he can take it out and test it.
+[00:55:08] Okay, okay.
+[00:55:09] Okay, the typical trader's UI where he looks at the trading terminal, the user also gives the trading terminal.
+[00:55:16] Don't you guys look at the terminal?
+[00:55:19] Do you just keep looking at the code?
+[00:55:21] What is the code saying?
+[00:55:22] What did you buy? What did you sell?
+[00:55:23] No, no, no.
+[00:55:24] The trading view is open.
+[00:55:26] This is the trading view.
+[00:55:28] These are the things.
+[00:55:30] And you can also see the trades on Zerodha.
+[00:55:37] So the trading terminal is on Zerodha.
+[00:55:39] You can see the trades there.
+[00:55:41] Don't you trade manually at all?
+[00:55:43] We do some, but I think it's less than 10%.
+[00:55:48] Okay.
+[00:55:49] So in the morning, you put the parameters and updated it in the script.
+[00:55:53] After that, the trade started.
+[00:55:55] This is called algorithmic trading.
+[00:55:57] Yes, and if something is very different than what you were thinking, you can handle your gap of 50-100 points.
+[00:56:06] But if something is very different, then maybe you will have to go back and change the parameters.
+[00:56:13] Stop that and say that no, my parameters have to be more aggressive or I have to do more things.
+[00:56:19] You update that and then run it again.
+[00:56:21] That's it.
+[00:56:23] So algo trading is nothing special.
+[00:56:25] It's just automation.
+[00:56:27] Let's say I have put you in a place where you don't think, you don't have bias, you just have to do what you are told.
+[00:56:37] And its speed is very fast.
+[00:56:40] Very good.
+[00:56:41] Speed is very fast.
+[00:56:42] That is very important.
+[00:56:43] So the initial thought you gave him that if this happens, do this.
+[00:56:49] That thought is at the top of your mind.
+[00:56:52] You obviously want some data analytics software to probably optimize your thinking.
+[00:57:00] Yes.
+[00:57:01] I also extract and analyze a lot of data.
+[00:57:05] Okay.
+[00:57:06] I extract data from Nifty, in how many days the close will be high.
+[00:57:11] For example,
+[00:57:12] I analyzed the data of volatility that if it goes to the market, there is a lot of difference between high and close.
+[00:57:21] Between high and low.
+[00:57:23] But there is very little between close and high.
+[00:57:26] So there are days where it will run up and down.
+[00:57:29] But where it was open, it will close around it.
+[00:57:32] Because of the volatility nature.
+[00:57:34] So how many percent is it?
+[00:57:36] So up to 150-200 points, your close comes back a lot.
+[00:57:40] Up to 150-200 points, we came out of our analysis.
+[00:57:42] But if it runs up to 150-200 points, when the market is up, then the close is above a gap.
+[00:57:47] So we got a flip point that if it comes out after this, then you go in full trend follow because the market will not come down much or something like that.
+[00:57:57] So we do a lot of analysis on that data.
+[00:58:01] So where do you download the data from?
+[00:58:03] It is used in trading.
+[00:58:05] It is done from the API of Zerodha.
+[00:58:07] I can show you the trading.
+[00:58:09] Like what we did just now.
+[00:58:10] Like this is the chart of Nifty on trading.
+[00:58:12] This is a 3-minute chart.
+[00:58:14] As much as you can see.
+[00:58:15] For example, if I have to extract for a very long time of 1 hour,
+[00:58:20] then I just go here and export the chart data.
+[00:58:27] Okay.
+[00:58:28] It exports it with time in CSV.
+[00:58:31] You just put it in Excel and whatever you want to analyze, make a pivot, you can do whatever you want to analyze.
+[00:58:37] Okay.
+[00:58:38] So for analysis, you are finally taking the data and doing the analysis on Excel.
+[00:58:42] That too, yes.
+[00:58:43] You are not using any analysis tool that you have all the data with you and you are playing with that data.
+[00:58:50] No.
+[00:58:51] No, no.
+[00:58:52] That much system has not been made yet.
+[00:58:53] Okay, okay.
+[00:58:54] You get some backtesting and all, but I think I have not kept much data with me.
+[00:59:02] Yes, I was doing algo at one place where I follow someone who does a lot of matching of charts.
+[00:59:09] So they can match 2-3 years old with a chart and do things.
+[00:59:14] I said, can we implement this through algo?
+[00:59:18] Can we take out the best matching chart in the last 3-4 years from 11-11.30 am to 12 am for 3-5 days and then I can see them manually.
+[00:59:33] That was also a setup, but I think I have not started using it yet.
+[00:59:38] But with the help of coding, what did it do?
+[00:59:40] You tell it and it will give you 5-7 days of the last 3 years in which this pattern is being matched roughly.
+[00:59:49] So you can see if there is any similarity in them.
+[00:59:53] Eventually, can today's day go like one of those 7 days and how can you trade it?
+[01:00:00] I don't take trade on them now.
+[01:00:04] Final I think very important slide which I would like to tell that what a trader needs is that he should be happy and profitable and should be able to trade in long term and make money
+[01:00:27] I think basics are very important, if your basics are not right then I don't think you should do it if you don't understand basics position size is a very critical setup, if I give my example, I build a very safe setup, so my next expiry I have 3x margin
+[01:00:45] available so when I come on friday or monday morning, I have 3x extra margin available to adjust on monday, tuesday and wednesday which is very important because tomorrow you can go to market, if you don't have enough margin then you will lose if you
+[01:01:04] have margin then you can adjust and save yourself from big loss, seller's biggest problem is to save from loss money will be made, market will be sideways then your money will be made but when there is loss then it shouldn't be big that is very important
+[01:01:23] and for this position sizing should be right, you won't believe my 70-80% capital is deployed in 10-15 days rest of the days I have 50% capital because I have long term also so I don't have 3x but it is only for this purpose that if market goes against
+[01:01:42] you then you can save yourself, third you can't copy anyone's trading style it is your personality, my personality is that I believe in making money slowly so I can't make money by buying although they have good ROIs, so you have to define your own trading
+[01:02:01] style and you have to trade according to that you will think of making money by copying someone else's trading style, when things will go wrong then he will handle it but if you are not built then you won't be able to handle it, you will be in loss but
+[01:02:20] he will still handle it so it is very important to know what you are made of, how you are made and you follow that style and I think a strong body is very important, many times it becomes hectic when the market moves widely so regular exercise and everything
+[01:02:39] helps, you might think it doesn't help but when you are in a lot of trouble your brain stops working, if your body is fit then your brain will also work properly, so it is very important to be healthy lovely, what a beautiful, I mean the last thing was
+[01:02:58] actually the ultimate and most important thing
+[01:03:07] I know, I try but yes, running and everything lovely, it was a lot of fun, for me it was a very different face to face because I saw coding happening live people are saying use AI, but you gave me a different dimension of how to use AI although it will
+[01:03:29] be difficult for me, I still need to go and learn this, it was very easy for you
+[01:03:38] no, no, but you will also do it, even your engineer, your engineer who used to say he will do it in 7 days you can do it in 1 day, so you think you can work for 7 days with 1 engineer yes, you don't need 4 engineers, you can do it with 1, that's why you
+[01:03:53] are taking out TCS
+[01:03:56] what will happen to IT, how will this thing, the army in India, the engineers, the people doing engineering who were joining Infosys, what will happen to them? a lot of problems, a lot of problems, will they all become traders? yes, I think they will
+[01:04:14] become, I am sure, and a lot of engineers will come in this setup
+[01:04:21] but I will see 10x productivity, in the next 1-1.5 years, 10x productivity will come easily engineers, even mechanical engineers have taken jobs from a lot of people and I am also an engineer, and I see, like people talk nowadays, a billion dollar company
+[01:04:45] because you need material for marketing, you don't need a team for that, you ask chatgpd or Gemini, they will give you and they will give you good material, you have to make a video, you don't have to do anything you have to talk to VO, he makes a video
+[01:05:02] and gives it, very good, high quality, everything so I think the effort to build stuff will reduce, and people talk about the world of abundance till now we fight, if you work hard, you will get food, hopefully we will move into a world of abundance where,
+[01:05:20] because of these AI robots and everything, you will not have a problem in food and basic needs because so much is being made, so much is happening
+[01:05:33] yeah, I was actually hearing that interview between Nikhil Kamath and Sam, OpenAI so they were discussing deflation, how AI can potentially create deflation but not in the premium segment, but definitely in a normal yeah, so basically if an engineer is
+[01:05:50] making 1-10 people work, it is deflationary earlier you had to spend 10 lakhs to make 1 work, now you are making it in 1 lakh so it is highly deflationary, robots will work, I am pretty sure, abundance and deflationary will go in the same set and everyone
+[01:06:08] will get food, we have a lot of poverty and problems that will be solved let's hope, the government will have to do their job and distribute the freebies but we will discuss this offline, but this was great, Rahi, it was amazing, it was fun you are called
+[01:06:26] a karma yogi, that you are actually doing it, experiencing it, making a loss and moving forward you are a true entrepreneur, you are trading with entrepreneurship, it was fun meeting you it was a lot of fun, and it is fun, so I will tell people, if you
+[01:06:44] have something in your mind, do try it if you understand it, if it works, then do it, if not, find something else but it was fun living life lovely, lovely, thank you, thank you, thank you friends for staying till the end and I hope you liked it, I think
+[01:07:02] you will watch the video again, I will also watch it because there are a lot of things in it, which you may not understand if you watch it once and the platform they have told, Jules and others, experiment and see what suits you ok, thank you, bye, Jai
+[01:07:19] Hind
+[01:07:41] Investment in securities market are subject to market risks, read all the related documents carefully before investing

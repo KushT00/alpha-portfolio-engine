@@ -37,6 +37,8 @@ const ApiKey = lazy(() => import('@/pages/ApiKey'))
 const Profile = lazy(() => import('@/pages/Profile'))
 const MasterContract = lazy(() => import('@/pages/MasterContract'))
 const ActionCenter = lazy(() => import('@/pages/ActionCenter'))
+const NiftyMaster = lazy(() => import('@/pages/NiftyMaster'))
+const TestingPage = lazy(() => import('@/pages/Testing'))
 
 // Platform pages
 const Platforms = lazy(() => import('@/pages/Platforms'))
@@ -167,6 +169,8 @@ function App() {
               {/* Protected routes - requires broker auth */}
               <Route element={<Layout />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/nifty-master" element={<NiftyMaster />} />
+                <Route path="/testing" element={<TestingPage />} />
                 <Route path="/positions" element={<Positions />} />
                 <Route path="/orderbook" element={<OrderBook />} />
                 <Route path="/tradebook" element={<TradeBook />} />

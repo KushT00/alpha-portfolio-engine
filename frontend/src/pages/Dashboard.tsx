@@ -257,6 +257,16 @@ export default function Dashboard() {
       iconColor: 'text-orange-500',
       borderColor: 'border-orange-500/20 hover:border-orange-500/40',
     },
+    {
+      href: '/nifty-master',
+      label: 'Nifty Master',
+      description: 'Adaptive regime-based strategy',
+      icon: Zap,
+      gradient: 'from-amber-500/10 to-amber-500/5 hover:from-amber-500/20 hover:to-amber-500/10',
+      iconBg: 'bg-amber-500/20',
+      iconColor: 'text-amber-500',
+      borderColor: 'border-amber-500/20 hover:border-amber-500/40',
+    },
   ]
 
   // If not authenticated, show login prompt

@@ -80,6 +80,7 @@ from blueprints.telegram import telegram_bp  # Import the telegram blueprint
 from blueprints.traffic import traffic_bp  # Import the traffic blueprint
 from blueprints.tv_json import tv_json_bp
 from blueprints.websocket_example import websocket_bp  # Import the websocket example blueprint
+from blueprints.nifty_master_api import nifty_master_bp  # Import the Nifty Master API blueprint
 from cors import cors  # Import the CORS instance
 from csp import apply_csp_middleware  # Import the CSP middleware
 from database.action_center_db import init_db as ensure_action_center_tables_exists
@@ -274,6 +275,7 @@ def create_app():
     app.register_blueprint(broker_credentials_bp)  # Register Broker credentials blueprint
     app.register_blueprint(system_permissions_bp)  # Register System permissions blueprint
     app.register_blueprint(strategy_portfolio_bp)  # Register Strategy Portfolio blueprint
+    app.register_blueprint(nifty_master_bp)  # Register Nifty Master API blueprint
 
     # Exempt webhook endpoints from CSRF protection after app initialization
     with app.app_context():
@@ -292,6 +294,9 @@ def create_app():
         csrf.exempt(app.view_functions["brlogin.samco_save_secret"])
         csrf.exempt(app.view_functions["brlogin.samco_ip_status"])
         csrf.exempt(app.view_functions["brlogin.samco_update_ip"])
+
+
+
 
         # Exempt logout endpoint from CSRF protection (safe - only destroys session)
         csrf.exempt(app.view_functions["auth.logout"])
@@ -562,6 +567,9 @@ def setup_environment(app):
                 logger.debug("Historify scheduler initialized")
             except Exception as e:
                 logger.error(f"Failed to initialize Historify scheduler: {e}")
+
+
+
 
             # Auto-start analyzer mode services (depends on DB being ready)
             try:

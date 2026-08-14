@@ -91,7 +91,7 @@ class OrderLatency(LatencyBase):
                 request_body=request_body,
                 response_body=response_body,
                 status=status,
-                error=error,
+                error=str(error) if error is not None else None,
             )
             latency_session.add(log)
             latency_session.commit()

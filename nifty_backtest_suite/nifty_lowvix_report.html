@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nifty Master Quant Suite - Performance Pitch Deck</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ---- Tab switcher ---- */
+        .tab-bar {
+            display: flex;
+            gap: 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .tab-btn {
+            padding: 12px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #64748b;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+        .tab-btn:hover { color: #2563eb; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 40px;
+        }
+        .header {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+        }
+        .header-title h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .header-title p {
+            margin: 6px 0 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+        .pnl-summary {
+            text-align: right;
+        }
+        .pnl-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .pnl-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #10b981;
+        }
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .kpi-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+        }
+        .kpi-title {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+        .kpi-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .kpi-value.green {
+            color: #10b981;
+        }
+        .kpi-value.red {
+            color: #ef4444;
+        }
+        .layout-columns {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .chart-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .heatmap-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .heatmap-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .heatmap-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0;
+            color: #0f172a;
+        }
+        .year-selector {
+            display: flex;
+            gap: 8px;
+        }
+        .year-btn {
+            background-color: #ffffff;
+            border: 1px solid #cbd5e1;
+            color: #64748b;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .year-btn.active {
+            background-color: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+        .calendar-month-labels {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            color: #64748b;
+            padding-left: 28px;
+        }
+        .calendar-month-label {
+            width: calc(100% / 12);
+            text-align: center;
+        }
+        .heatmap-body-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+        .day-labels {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #64748b;
+            height: 102px;
+            padding-top: 2px;
+            width: 20px;
+        }
+        .heatmap-container {
+            width: 100%;
+        }
+        .legend {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 15px;
+        }
+        .legend-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th {
+            text-align: left;
+            padding: 12px;
+            color: #64748b;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+        .pitch-card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .pitch-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #0f172a;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+        .pitch-bullet {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #334155;
+            margin-bottom: 12px;
+        }
+        .pitch-bullet strong {
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title">
+            <h1>Nifty Systematic Options Portfolio</h1>
+            <p>Investor Pitch Deck &amp; Performance Analytics Dashboard</p>
+        </div>
+        <div class="pnl-summary">
+            <div class="pnl-label">Combined Net Profit (both strategies)</div>
+            <div class="pnl-value">Rs. 1,368,825.26</div>
+        </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('hedging')">📈 Hedging Strategy</button>
+        <button class="tab-btn" onclick="switchTab('optbuy')">🎯 5m Triple Confirm</button>
+        <button class="tab-btn" onclick="switchTab('combined')">🔗 Combined Portfolio</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- TAB 1: HEDGING STRATEGY                                      -->
+    <!-- ============================================================ -->
+    <div id="tab-hedging" class="tab-content active">
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-title">Capital Deployed</div>
+            <div class="kpi-value">Rs. 150,000</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">CAGR (Annualized)</div>
+            <div class="kpi-value green">30.57%</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Avg. Monthly Return</div>
+            <div class="kpi-value green">Rs. 6,438.05 (4.29%)</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Sharpe Ratio</div>
+            <div class="kpi-value">2.26</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Sortino Ratio</div>
+            <div class="kpi-value">2.26</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-title">Recovery Factor</div>
+            <div class="kpi-value">6.07</div>
+        </div>
+    </div>
+
+    <!-- Calendar Heatmap Section (Booked P&L Only) -->
+    <div class="heatmap-card">
+        <div class="heatmap-header">
+            <h2 class="heatmap-title">Booked P&L Calendar (Trade Realisation Days)</h2>
+            <div class="year-selector" id="yearSelector">
+                <button class="year-btn active" onclick="setYear(2022)">2022</button>
+                <button class="year-btn" onclick="setYear(2023)">2023</button>
+                <button class="year-btn" onclick="setYear(2024)">2024</button>
+                <button class="year-btn" onclick="setYear(2025)">2025</button>
+                <button class="year-btn" onclick="setYear(2026)">2026</button>
+            </div>
+        </div>
+        
+        <div class="calendar-grid-wrapper">
+            <div class="calendar-month-labels">
+                <div class="calendar-month-label">Jan</div>
+                <div class="calendar-month-label">Feb</div>
+                <div class="calendar-month-label">Mar</div>
+                <div class="calendar-month-label">Apr</div>
+                <div class="calendar-month-label">May</div>
+                <div class="calendar-month-label">Jun</div>
+                <div class="calendar-month-label">Jul</div>
+                <div class="calendar-month-label">Aug</div>
+                <div class="calendar-month-label">Sep</div>
+                <div class="calendar-month-label">Oct</div>
+                <div class="calendar-month-label">Nov</div>
+                <div class="calendar-month-label">Dec</div>
+            </div>
+            <div class="heatmap-body-wrapper">
+                <div class="day-labels">
+                    <div>Sun</div>
+                    <div>Tue</div>
+                    <div>Thu</div>
+                    <div>Sat</div>
+                </div>
+                <div class="heatmap-container" id="heatmapContainer"></div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <span>Loss</span>
+            <div class="legend-box" style="background-color: rgba(239, 68, 68, 1)"></div>
+            <div class="legend-box" style="background-color: rgba(239, 68, 68, 0.6)"></div>
+            <div class="legend-box" style="background-color: rgba(239, 68, 68, 0.3)"></div>
+            <div class="legend-box" style="background-color: #f1f5f9"></div>
+            <div class="legend-box" style="background-color: rgba(16, 185, 129, 0.3)"></div>
+            <div class="legend-box" style="background-color: rgba(16, 185, 129, 0.6)"></div>
+            <div class="legend-box" style="background-color: rgba(16, 185, 129, 1)"></div>
+            <span>Profit</span>
+        </div>
+        
+        <!-- Monthly Performance Table (dynamic) -->
+        <div id="monthlyTableContainer" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="layout-columns">
+        <div class="chart-card">
+            <div class="heatmap-title" style="margin-bottom: 20px;">Growth of Capital (Cumulative Equity Curve)</div>
+            <div style="height: 380px;">
+                <canvas id="equityChart"></canvas>
+            </div>
+        </div>
+        
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+            <div class="pitch-card">
+                <div class="pitch-title">Model Performance Breakdowns</div>
+                <table style="font-size: 12px; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Strategy</th>
+                            <th>Trades</th>
+                            <th>Win Rate</th>
+                            <th>Net P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Wednesday Carry</td>
+                            <td>147</td>
+                            <td>74.8%</td>
+                            <td class="green" style="color: #10b981; font-weight: 600;">Rs. 326,193.26</td>
+                        </tr>
+                        <tr>
+                            <td>Friday Low VIX</td>
+                            <td>70</td>
+                            <td>71.4%</td>
+                            <td class="green" style="color: #10b981; font-weight: 600;">Rs. 35,464.82</td>
+                        </tr>
+                        <tr>
+                            <td>Tuesday Expiry</td>
+                            <td>36</td>
+                            <td>30.6%</td>
+                            <td class="red" style="color: #ef4444; font-weight: 600;">Rs. -14,798.55</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pitch-card">
+                <div class="pitch-title">Investor Analytics</div>
+                <div class="pitch-bullet"><strong>Walk-Forward Stability</strong>: In-Sample (2022-23) Win Rate is 82.7% (PF: 5.85) vs. Out-of-Sample (2024-26) Win Rate of 58.1% (PF: 1.50), verifying resilience across macroeconomic shifts.</div>
+                <div class="pitch-bullet"><strong>Trade Expectancy</strong>: Expectation of **Rs. 1370.99** per trade, reflecting a positive expectancy profile.</div>
+                <div class="pitch-bullet"><strong>Drawdown Profile</strong>: Maximum peak-to-trough historical drawdown is capped at **14.10%**, demonstrating excellent downside risk controls.</div>
+            </div>
+        </div>
+    </div>
+    </div><!-- end tab-hedging -->
+
+    <!-- ============================================================ -->
+    <!-- TAB 2: 5m TRIPLE CONFIRM (OPTION BUYING)                     -->
+    <!-- ============================================================ -->
+    <div id="tab-optbuy" class="tab-content">
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Total Trades</div>
+                <div class="kpi-value">705</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Win Rate</div>
+                <div class="kpi-value green">50.5%</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Profit Factor</div>
+                <div class="kpi-value green">1.53</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Net P&amp;L</div>
+                <div class="kpi-value green">Rs. 1,021,965.73</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Gross P&amp;L</div>
+                <div class="kpi-value">Rs. 1,064,265.73</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Max Drawdown</div>
+                <div class="kpi-value red">21.79%</div>
+            </div>
+        </div>
+
+        <div class="layout-columns">
+            <div class="chart-card">
+                <div class="heatmap-title" style="margin-bottom:20px;">5m Triple Confirm — Equity Curve</div>
+                <div style="height:380px;"><canvas id="obEquityChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="pitch-title">Strategy Notes</div>
+                <div class="pitch-bullet"><strong>Entry Logic</strong>: SMA68 / SMA90 crossover with close above/below EMA340. Re-entry on pullback across EMA340.</div>
+                <div class="pitch-bullet"><strong>Risk Management</strong>: Fixed SL at 0.75% on spot (Phase 1). Trailing SL activates once profit ≥ 0.75% (Phase 2).</div>
+                <div class="pitch-bullet"><strong>Expiry Rollover</strong>: On Tuesday at 15:15, open position squares off and re-enters next expiry at Rs.200 premium.</div>
+                <div class="pitch-bullet"><strong>Brokerage</strong>: Rs.200 flat per round-trip. Lot size: 65 units.</div>
+                <div class="pitch-bullet"><strong>Total Charges</strong>: Rs. 42,300.00</div>
+            </div>
+        </div>
+
+        <!-- Monthly table -->
+        <div class="heatmap-card" style="margin-top:30px;">
+            <div class="heatmap-title" style="margin-bottom:16px;">Monthly Performance — 5m Triple Confirm</div>
+            <table>
+                <thead><tr><th>Month</th><th>Trades</th><th>Gross P&amp;L</th><th>Charges</th><th>Net P&amp;L</th></tr></thead>
+                <tbody id="obMonthlyBody"></tbody>
+            </table>
+        </div>
+    </div><!-- end tab-optbuy -->
+
+    <!-- ============================================================ -->
+    <!-- TAB 3: COMBINED PORTFOLIO                                     -->
+    <!-- ============================================================ -->
+    <div id="tab-combined" class="tab-content">
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Combined Net P&amp;L</div>
+                <div class="kpi-value green">Rs. 1,368,825.26</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Hedging Net P&amp;L</div>
+                <div class="kpi-value green">Rs. 346,859.53</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">5m OB Net P&amp;L</div>
+                <div class="kpi-value green">Rs. 1,021,965.73</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Hedging Trades</div>
+                <div class="kpi-value">253</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">5m OB Trades</div>
+                <div class="kpi-value">705</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">5m OB Profit Factor</div>
+                <div class="kpi-value">1.53</div>
+            </div>
+        </div>
+        <div class="chart-card">
+            <div class="heatmap-title" style="margin-bottom:20px;">Combined Portfolio Equity Curve</div>
+            <div style="height:400px;"><canvas id="combinedEquityChart"></canvas></div>
+        </div>
+    </div><!-- end tab-combined -->
+
+    <script>
+        const equityCurve = [150000.0, 154057.67050012463, 158231.0433972099, 166404.4935237431, 169116.29101201746, 168428.81972202958, 172820.68608148023, 180735.09197856847, 179008.86271615277, 179399.1691418756, 167494.67797959677, 167290.7841618611, 177249.06917302602, 178080.79325971752, 178492.24598152668, 186466.6221587852, 186651.90575658527, 191585.95621946448, 198822.7775854633, 207706.91947214512, 216857.51551797095, 222979.7694539193, 224850.94145970256, 229916.97861251706, 236733.28867987578, 236229.96257995028, 231847.77942052606, 232813.67910142586, 234256.86628754667, 236044.6263770619, 240796.5049001262, 239840.01311799441, 240639.7240296507, 246110.74378158798, 250513.887134927, 255300.8427874873, 259794.50609251682, 260759.4343171129, 265495.7395767777, 265226.07047289034, 265046.8717730056, 270769.3171846465, 276965.19134866964, 280591.69874022366, 281381.09034242993, 282818.7054807372, 289169.315110926, 295005.95013484434, 296780.91897031193, 295227.4427120821, 297534.6997149131, 300064.90602677834, 304880.46436661226, 309110.6300026408, 313989.9878596918, 316775.6487941599, 321591.41834092815, 328108.3355104122, 328335.2984015817, 328525.1704348794, 333544.9271208153, 336314.9695656659, 334167.5303522672, 340216.3694069975, 339991.94475368084, 346669.1115173564, 347557.7569555977, 348281.22119224345, 349553.6945468462, 349832.6138718314, 353857.58146052243, 355128.7967843378, 356043.2810316598, 356953.75111658557, 357751.25026803353, 358242.4650536105, 359212.0167550935, 359448.109953533, 358002.9057652504, 358194.45024636626, 359025.9407317997, 359996.8844737448, 360366.1597871193, 360660.81495000474, 360998.97465566423, 362135.896413088, 368916.02459100395, 370378.4537685072, 371230.2369841907, 372165.27330802445, 353626.95639019366, 354546.7128707034, 361495.2766757232, 362863.66474986385, 360872.9864531372, 367348.44607880834, 367319.33454909857, 366958.96476566204, 378429.19826926215, 378165.71661219606, 381930.5309613058, 382656.8393805894, 382588.3932491649, 390635.27142685367, 382718.4804802492, 391232.6372610215, 390938.0773191354, 398070.6877972137, 405341.4825894849, 391637.81228324893, 391697.9468225003, 382275.9546554957, 383198.64189367363, 383043.11206908274, 384093.78804512613, 382713.9572805497, 381414.99445221835, 381227.4569756979, 382648.800827855, 374285.83200414025, 369804.4553464098, 349225.9963225503, 348194.61867265904, 353286.7218300875, 354819.07912617363, 361554.1603643271, 366024.6260469153, 370635.8123321346, 370657.1046939446, 369620.915457952, 365694.86350016657, 364827.9686635718, 372175.7451763559, 371549.2140967076, 375017.9588845212, 371641.07766345335, 377284.85355653183, 377824.5058165173, 369431.6199751469, 374936.23577055015, 381836.6587536613, 381418.74297375744, 386796.78327340545, 390850.71868096624, 396854.81556731125, 395165.264036678, 401048.018777114, 400139.7125909106, 405914.0070948543, 414963.4580505503, 401183.2900304741, 400686.22401198815, 406807.0162390061, 405725.7935273877, 411583.69179669657, 418042.382684036, 423713.1756995701, 427390.81195454724, 412013.99599258916, 419948.0587285986, 418828.76728311635, 420284.19690959767, 419311.78175099817, 420880.22516998893, 428354.99172362755, 436540.743780528, 437334.82985199086, 441368.24178239895, 440892.68182375433, 434623.72952216293, 422367.7761599397, 427866.57819956285, 435611.61453303817, 433772.98133462254, 399554.4165414399, 385794.9853627612, 393042.16797637794, 391420.30905117554, 396405.6480097338, 397295.44500016613, 397935.4519288529, 395848.2069412218, 400418.0808119316, 399825.8106052618, 399456.7852971955, 398845.18222956685, 403950.38223549194, 402921.6540467704, 404261.4863414226, 409454.60497728206, 410157.3297816249, 413674.4030569089, 413953.30666291306, 413589.3105262446, 413959.9497952871, 414619.10172751534, 414739.5064180855, 415235.44141215435, 415295.9877360649, 415626.8226704025, 416238.2144653406, 416719.74260829575, 416838.39491616574, 416700.0759116765, 417320.27171669534, 417540.908870982, 417274.16077541653, 416211.9185111292, 415427.9779211952, 414665.8231193766, 415030.8590768899, 418935.9561519165, 420587.40150461724, 420535.6101604833, 427201.4301344872, 426848.2746370699, 428877.8475045766, 429104.5402379115, 429067.9784756442, 428616.9720937854, 434603.62316072726, 439336.0503445097, 437198.40715554915, 435963.8075377016, 435695.8662204752, 435262.9008404859, 433944.6066917453, 445177.40744496265, 446353.04254369385, 454026.6611215021, 452446.22212398896, 460686.42834671517, 471040.346479498, 476598.20763985347, 484876.32000522636, 490307.4118928783, 491688.30578580993, 491424.5610191341, 490728.8347537462, 498059.8245832471, 497354.89511746855, 496739.6924386509, 496765.4352630207, 502195.2989012177, 501833.4627559059, 503624.5657924895, 503225.2418511624, 504084.1183177274, 504897.94505406904, 514350.4289617245, 515102.54537130886, 499189.36790653557, 505653.6905842503, 496859.52598201274];
+        const bookedPnls = {"2022-01-10": 4057.670500124632, "2022-01-17": 4173.37289708528, "2022-01-24": 8173.450126533182, "2022-01-31": 2711.797488274385, "2022-02-03": -687.4712899878899, "2022-02-14": 4391.866359450664, "2022-02-21": 7914.405897088247, "2022-02-24": -1726.2292624157112, "2022-03-04": 390.3064257228317, "2022-03-10": -11904.491162278842, "2022-03-17": -203.89381773566993, "2022-03-28": 9958.28501116491, "2022-03-29": 831.7240866915006, "2022-04-04": 411.4527218091433, "2022-04-11": 7974.376177258538, "2022-04-18": 185.28359780007662, "2022-04-25": 4934.050462879203, "2022-05-02": 7236.821365998837, "2022-05-09": 8884.141886681806, "2022-05-16": 9150.596045825845, "2022-05-23": 6122.253935948324, "2022-05-27": 1871.1720057832651, "2022-06-06": 5066.037152814505, "2022-06-13": 6816.31006735871, "2022-06-16": -503.3260999254968, "2022-06-27": -4382.183159424219, "2022-07-01": 965.8996808997945, "2022-07-08": 1443.1871861208042, "2022-07-18": 1787.7600895152325, "2022-07-25": 4751.878523064293, "2022-07-28": -956.4917821317696, "2022-08-08": 799.7109116563039, "2022-08-16": 5471.019751937283, "2022-08-22": 4403.143353339016, "2022-08-29": 4786.955652560296, "2022-09-05": 4493.663305029532, "2022-09-09": 964.9282245960802, "2022-09-19": 4736.30525966478, "2022-09-23": -269.66910388733345, "2022-09-27": -179.1986998847591, "2022-10-03": 5722.445411640898, "2022-10-10": 6195.874164023123, "2022-10-17": 3626.507391553991, "2022-10-24": 789.3916022062775, "2022-10-31": 1437.6151383072959, "2022-11-07": 6350.609630188801, "2022-11-14": 5836.635023918364, "2022-11-21": 1774.9688354676123, "2022-11-28": -1553.476258229811, "2022-12-05": 2307.2570028309624, "2022-12-19": 2530.206311865232, "2022-12-26": 4815.558339833951, "2023-01-09": 4230.165636028566, "2023-01-16": 4879.357857050962, "2023-01-23": 2785.6609344680833, "2023-01-30": 4815.769546768294, "2023-02-06": 6516.917169484008, "2023-02-14": 226.9628911695537, "2023-02-21": 189.8720332976509, "2023-02-27": 5019.756685935937, "2023-03-06": 2770.0424448505346, "2023-03-13": -2147.4392133986667, "2023-03-20": 6048.839054730329, "2023-04-03": -224.424653316662, "2023-04-11": 6677.1667636755765, "2023-04-25": 888.6454382413211, "2023-05-02": 723.4642366457208, "2023-05-09": 1272.4733546027298, "2023-05-16": 278.91932498520475, "2023-05-22": 4024.96758869103, "2023-05-30": 1271.215323815327, "2023-06-06": 914.4842473220342, "2023-06-13": 910.4700849257698, "2023-06-20": 797.499151447941, "2023-06-27": 491.21478557698447, "2023-07-04": 969.5517014829903, "2023-07-11": 236.09319843954268, "2023-07-18": -1445.2041882826293, "2023-07-25": 191.54448111587828, "2023-08-01": 831.4904854334121, "2023-08-08": 970.9437419451026, "2023-08-22": 369.27531337454445, "2023-08-29": 294.65516288541323, "2023-09-05": 338.15970565950397, "2023-09-12": 1136.9217574237855, "2023-09-26": 6780.128177915942, "2023-10-03": 1462.4291775032743, "2023-10-10": 851.7832156834895, "2023-10-17": 935.0363238337588, "2023-10-30": -18538.316917830758, "2023-11-07": 919.7564805097388, "2023-11-21": 6948.56380501979, "2023-11-28": 1368.3880741406742, "2023-12-04": -1990.6782967266593, "2023-12-11": 6475.4596256711775, "2023-12-18": -29.111529709754677, "2023-12-19": -360.3697834365135, "2024-01-01": 11470.233503600104, "2024-01-09": -263.4816570660982, "2024-01-29": 3764.8143491096976, "2024-01-30": 726.3084192835706, "2024-02-02": -68.44613142445587, "2024-02-12": 8046.878177688776, "2024-02-19": -7916.790946604474, "2024-02-26": 8514.156780772277, "2024-03-01": -294.55994188606326, "2024-03-11": 7132.610478078246, "2024-03-18": 7270.794792271207, "2024-03-28": -13703.670306235957, "2024-04-09": 60.13453925137776, "2024-04-16": -9421.992167004633, "2024-04-22": 922.6872381779174, "2024-04-30": -155.52982459089282, "2024-05-06": 1050.675976043419, "2024-05-07": -1379.8307645764646, "2024-05-09": -1298.9628283313284, "2024-05-14": -187.53747652046042, "2024-05-17": 1421.3438521571006, "2024-05-27": -8362.968823714735, "2024-06-03": -4481.376657730406, "2024-06-06": -20578.45902385952, "2024-06-11": -1031.3776498912603, "2024-06-24": 5092.10315742842, "2024-07-01": 1532.3572960861736, "2024-07-08": 6735.081238153422, "2024-07-15": 4470.465682588254, "2024-07-22": 4611.1862852192435, "2024-07-23": 21.29236181002699, "2024-07-30": -1036.1892359926321, "2024-08-05": -3926.0519577854384, "2024-08-06": -866.894836594775, "2024-08-12": 7347.776512784063, "2024-08-13": -626.5310796482813, "2024-08-26": 3468.7447878136236, "2024-09-02": -3376.8812210678816, "2024-09-09": 5643.775893078479, "2024-09-17": 539.6522599854733, "2024-09-23": -8392.885841370406, "2024-09-30": 5504.615795403246, "2024-10-07": 6900.422983111152, "2024-10-08": -417.9157799038886, "2024-10-14": 5378.0402996479925, "2024-10-21": 4053.9354075607775, "2024-10-28": 6004.096886344992, "2024-10-29": -1689.5515306332486, "2024-11-04": 5882.754740435971, "2024-11-05": -908.3061862033638, "2024-11-11": 5774.294503943703, "2024-11-18": 9049.450955696004, "2024-11-22": -13780.168020076248, "2024-11-26": -497.06601848595847, "2024-12-02": 6120.792227017919, "2024-12-03": -1081.2227116183424, "2024-12-09": 5857.898269308855, "2024-12-17": 6458.690887339418, "2024-12-23": 5670.793015534122, "2024-12-30": 3677.6362549771534, "2025-01-02": -15376.815961958055, "2025-01-13": 7934.062736009396, "2025-01-21": -1119.291445482256, "2025-01-27": 1455.4296264813445, "2025-01-28": -972.4151585995019, "2025-01-31": 1568.4434189907481, "2025-02-10": 7474.7665536386385, "2025-02-17": 8185.75205690048, "2025-02-18": 794.0860714628274, "2025-02-24": 4033.411930408111, "2025-02-28": -475.5599586446366, "2025-03-06": -6268.952301591422, "2025-03-20": -12255.953362223232, "2025-03-25": 5498.80203962313, "2025-04-07": 7745.036333475327, "2025-04-08": -1838.6331984156486, "2025-04-15": -34218.56479318265, "2025-04-17": -13759.431178678724, "2025-04-28": 7247.182613616748, "2025-04-29": -1621.8589252024005, "2025-05-05": 4985.338958558273, "2025-05-06": 889.7969904323306, "2025-05-09": 640.0069286867227, "2025-05-13": -2087.2449876310916, "2025-05-19": 4569.8738707098055, "2025-05-20": -592.2702066697352, "2025-05-22": -369.02530806635866, "2025-05-27": -611.6030676286264, "2025-06-02": 5105.200005925103, "2025-06-03": -1028.7281887215222, "2025-06-09": 1339.8322946521644, "2025-06-16": 5193.118635859464, "2025-06-17": 702.7248043428394, "2025-06-23": 3517.07327528403, "2025-07-01": 278.9036060041333, "2025-07-08": -363.9961366684631, "2025-07-15": 370.6392690425073, "2025-07-22": 659.1519322282568, "2025-07-29": 120.40469057016048, "2025-08-05": 495.93499406885906, "2025-08-12": 60.546323910539115, "2025-08-26": 330.8349343376108, "2025-09-02": 611.3917949381492, "2025-09-09": 481.5281429551619, "2025-09-16": 118.65230786999132, "2025-09-23": -138.3190044892453, "2025-09-30": 620.1958050188194, "2025-10-07": 220.63715428668843, "2025-10-14": -266.7480955654726, "2025-10-21": -1062.242264287294, "2025-10-28": -783.9405899340289, "2025-11-04": -762.154801818596, "2025-11-11": 365.0359575132542, "2025-11-18": 3905.09707502664, "2025-11-24": 1651.445352700719, "2025-12-02": -51.791344133981056, "2025-12-09": 6665.819974003933, "2025-12-16": -353.15549741734594, "2025-12-23": 2029.5728675067003, "2025-12-30": 226.6927333349089, "2026-01-06": -36.561762267317704, "2026-01-13": -451.0063818587962, "2026-01-20": 5986.651066941821, "2026-02-02": 4732.427183782473, "2026-02-10": -2137.6431889605738, "2026-02-16": -1234.5996178475139, "2026-02-17": -267.9413172264575, "2026-02-24": -432.96537998928073, "2026-03-02": -1318.2941487405938, "2026-03-09": 11232.800753217387, "2026-03-10": 1175.6350987311966, "2026-03-16": 7673.618577808277, "2026-03-17": -1580.438997513142, "2026-03-23": 8240.206222726203, "2026-03-30": 10353.918132782856, "2026-04-06": 5557.861160355444, "2026-04-13": 8278.112365372863, "2026-04-20": 5431.091887651918, "2026-04-21": 1380.893892931624, "2026-04-23": -263.7447666758155, "2026-04-28": -695.726265387885, "2026-05-04": 7330.989829500839, "2026-05-05": -704.9294657785051, "2026-05-11": -615.2026788177013, "2026-05-12": 25.742824369783136, "2026-05-18": 5429.8636381970355, "2026-05-19": -361.836145311838, "2026-05-25": 1791.1030365836498, "2026-05-26": -399.32394132711033, "2026-06-01": 858.8764665650106, "2026-06-02": 813.8267363416128, "2026-06-08": 9452.483907655449, "2026-06-09": 752.1164095843826, "2026-06-15": -15913.177464773307, "2026-06-22": 6464.32267771475, "2026-06-25": -8794.164602237606};
+        const monthlyData = {"2022-01": {"trades": 4, "gross_pnl": 20200.948965359297, "charges": 1084.6579533418203, "net_pnl": 19116.29101201748}, "2022-02": {"trades": 4, "gross_pnl": 11021.293191871478, "charges": 1128.721487736168, "net_pnl": 9892.571704135311}, "2022-03": {"trades": 5, "gross_pnl": 575.726782675307, "charges": 1503.7962391105768, "net_pnl": -928.06945643527}, "2022-04": {"trades": 4, "gross_pnl": 14579.34624854166, "charges": 1074.183288794701, "net_pnl": 13505.162959746962}, "2022-05": {"trades": 5, "gross_pnl": 34668.522620249096, "charges": 1403.5373800110192, "net_pnl": 33264.98524023808}, "2022-06": {"trades": 4, "gross_pnl": 8105.687234171247, "charges": 1108.8492733477487, "net_pnl": 6996.837960823499}, "2022-07": {"trades": 5, "gross_pnl": 9334.053336109693, "charges": 1341.8196386413374, "net_pnl": 7992.233697468356}, "2022-08": {"trades": 4, "gross_pnl": 16557.73804188599, "charges": 1096.908372393091, "net_pnl": 15460.829669492901}, "2022-09": {"trades": 5, "gross_pnl": 11175.214088610534, "charges": 1429.1851030922317, "net_pnl": 9746.0289855183}, "2022-10": {"trades": 5, "gross_pnl": 19120.167571599533, "charges": 1348.3338638679468, "net_pnl": 17771.833707731585}, "2022-11": {"trades": 4, "gross_pnl": 13498.769992083866, "charges": 1090.0327607389013, "net_pnl": 12408.737231344967}, "2022-12": {"trades": 3, "gross_pnl": 10414.258684930977, "charges": 761.237030400832, "net_pnl": 9653.021654530145}, "2023-01": {"trades": 4, "gross_pnl": 17758.4362466022, "charges": 1047.482272286292, "net_pnl": 16710.953974315904}, "2023-02": {"trades": 4, "gross_pnl": 13370.321194567665, "charges": 1416.8124146805146, "net_pnl": 11953.50877988715}, "2023-03": {"trades": 3, "gross_pnl": 7450.530978337939, "charges": 779.0886921557421, "net_pnl": 6671.442286182197}, "2023-04": {"trades": 3, "gross_pnl": 8322.39488652138, "charges": 981.0073379211451, "net_pnl": 7341.387548600236}, "2023-05": {"trades": 5, "gross_pnl": 9166.882052067036, "charges": 1595.8422233270237, "net_pnl": 7571.039828740012}, "2023-06": {"trades": 4, "gross_pnl": 4439.094836535075, "charges": 1325.426567262346, "net_pnl": 3113.6682692727295}, "2023-07": {"trades": 4, "gross_pnl": 1428.9353869539837, "charges": 1476.9501941982016, "net_pnl": -48.01480724421788}, "2023-08": {"trades": 4, "gross_pnl": 3941.2002822068685, "charges": 1474.8355785683962, "net_pnl": 2466.3647036384723}, "2023-09": {"trades": 3, "gross_pnl": 9435.04997516657, "charges": 1179.840334167339, "net_pnl": 8255.209640999232}, "2023-10": {"trades": 4, "gross_pnl": -14079.603299494971, "charges": 1209.4649013152666, "net_pnl": -15289.068200810236}, "2023-11": {"trades": 3, "gross_pnl": 10268.729444742788, "charges": 1032.021085072584, "net_pnl": 9236.708359670203}, "2023-12": {"trades": 4, "gross_pnl": 5363.903587989725, "charges": 1268.603572191476, "net_pnl": 4095.30001579825}, "2024-01": {"trades": 4, "gross_pnl": 16925.74986920145, "charges": 1227.8752542741727, "net_pnl": 15697.874614927274}, "2024-02": {"trades": 4, "gross_pnl": 9718.76247387943, "charges": 1142.9645934473074, "net_pnl": 8575.797880432125}, "2024-03": {"trades": 4, "gross_pnl": 1553.6633663438588, "charges": 1148.488344116426, "net_pnl": 405.17502222743315}, "2024-04": {"trades": 4, "gross_pnl": -7141.0497859691795, "charges": 1453.6504281970535, "net_pnl": -8594.70021416623}, "2024-05": {"trades": 6, "gross_pnl": -6833.969381609696, "charges": 1923.3106833327734, "net_pnl": -8757.280064942468}, "2024-06": {"trades": 4, "gross_pnl": -19630.881715173047, "charges": 1368.2284588797206, "net_pnl": -20999.110174052763}, "2024-07": {"trades": 6, "gross_pnl": 18166.400484185488, "charges": 1832.2068563209991, "net_pnl": 16334.19362786449}, "2024-08": {"trades": 5, "gross_pnl": 6728.907904549842, "charges": 1331.864477980651, "net_pnl": 5397.043426569191}, "2024-09": {"trades": 5, "gross_pnl": 1547.859592370628, "charges": 1629.5827063417173, "net_pnl": -81.72311397108842}, "2024-10": {"trades": 6, "gross_pnl": 21907.066245129507, "charges": 1678.0379790017316, "net_pnl": 20229.028266127774}, "2024-11": {"trades": 6, "gross_pnl": 7313.9116556884765, "charges": 1792.9516803783708, "net_pnl": 5520.959975310108}, "2024-12": {"trades": 6, "gross_pnl": 28480.260517542, "charges": 1775.6725749828793, "net_pnl": 26704.587942559123}, "2025-01": {"trades": 6, "gross_pnl": -4800.813718898753, "charges": 1709.77306565957, "net_pnl": -6510.586784558323}, "2025-02": {"trades": 5, "gross_pnl": 21333.11091696932, "charges": 1320.6542632038995, "net_pnl": 20012.45665376542}, "2025-03": {"trades": 3, "gross_pnl": -11925.893641911602, "charges": 1100.2099822799196, "net_pnl": -13026.103624191524}, "2025-04": {"trades": 6, "gross_pnl": -34528.52455412272, "charges": 1917.7445942646345, "net_pnl": -36446.26914838735}, "2025-05": {"trades": 8, "gross_pnl": 10067.406168024649, "charges": 2642.5329896333287, "net_pnl": 7424.873178391321}, "2025-06": {"trades": 6, "gross_pnl": 16493.581902559898, "charges": 1664.3610752178208, "net_pnl": 14829.220827342078}, "2025-07": {"trades": 5, "gross_pnl": 3316.310834267115, "charges": 2251.2074730905206, "net_pnl": 1065.1033611765947}, "2025-08": {"trades": 3, "gross_pnl": 2234.306875062637, "charges": 1346.9906227456286, "net_pnl": 887.316252317009}, "2025-09": {"trades": 5, "gross_pnl": 3926.9375422261605, "charges": 2233.488495933284, "net_pnl": 1693.4490462928766}, "2025-10": {"trades": 4, "gross_pnl": -97.1221054298685, "charges": 1795.1716900702386, "net_pnl": -1892.293795500107}, "2025-11": {"trades": 4, "gross_pnl": 6614.349149406411, "charges": 1454.9255659843934, "net_pnl": 5159.423583422017}, "2025-12": {"trades": 5, "gross_pnl": 10601.610738193209, "charges": 2084.472004898995, "net_pnl": 8517.138733294214}, "2026-01": {"trades": 3, "gross_pnl": 6842.751169613739, "charges": 1343.6682467980318, "net_pnl": 5499.082922815707}, "2026-02": {"trades": 5, "gross_pnl": 2320.9371447282297, "charges": 1661.6594649695826, "net_pnl": 659.2776797586466}, "2026-03": {"trades": 7, "gross_pnl": 38206.73875438077, "charges": 2429.2931153685904, "net_pnl": 35777.445639012185}, "2026-04": {"trades": 6, "gross_pnl": 21630.89897805471, "charges": 1942.4107038065615, "net_pnl": 19688.488274248146}, "2026-05": {"trades": 8, "gross_pnl": 14996.734555756735, "charges": 2500.3274583405823, "net_pnl": 12496.407097416155}, "2026-06": {"trades": 7, "gross_pnl": -4390.405050578718, "charges": 1975.3108185709903, "net_pnl": -6365.715869149708}};
+        const obEquityCurve = [150000.0, 145095.8, 150861.76, 151821.49, 156482.75, 152010.58, 158281.45, 157065.24, 179603.23, 175293.9, 170778.59, 178416.2, 190740.14, 191368.39, 195593.02, 208374.35, 210753.4, 222355.56, 231585.29, 231232.05, 222706.64, 213440.79, 207716.52, 224581.21, 216284.1, 238933.13, 240872.09, 235975.19, 224780.45, 221326.12, 237219.91, 229650.02, 226356.12, 229611.43, 221475.76, 227311.89, 219524.93, 220788.71, 221137.47, 212628.93, 207418.02, 204140.72, 195770.67, 197308.23, 198378.49, 204069.6, 226371.88, 221765.13, 222081.36, 213271.98, 212838.57, 218546.6, 231766.79, 226387.65, 226262.72, 221331.08, 217803.85, 218043.6, 226182.39, 221708.39, 212048.94, 216236.54, 222436.56, 231896.76, 232337.97, 239413.5, 241256.15, 233899.84, 244427.92, 244516.73, 244695.94, 244447.45, 241915.75, 234745.55, 237273.18, 237317.89, 243669.75, 238455.41, 246678.46, 247059.75, 245894.04, 253713.65, 245035.65, 238949.0, 247257.97, 247686.19, 250752.27, 245551.53, 271067.4, 266853.49, 278100.01, 270352.52, 279054.73, 277551.06, 269870.59, 265190.52, 261027.61, 263602.61, 259838.19, 253657.38, 247452.7, 246546.35, 245718.68, 268110.52, 261182.33, 261407.64, 253523.99, 268383.43, 268498.23, 287615.64, 291460.66, 291641.88, 283551.9, 315201.27, 317003.77, 344797.79, 344951.53, 346525.31, 363377.19, 359200.04, 354813.2, 349643.67, 365867.43, 366014.67, 357289.11, 352384.46, 355088.68, 354910.93, 346245.14, 340862.04, 339901.57, 345845.64, 345973.37, 337105.53, 332328.91, 347305.47, 347385.29, 347058.03, 338316.76, 341670.53, 342466.94, 342563.69, 347146.8, 347939.56, 339256.05, 332728.62, 336199.78, 336210.54, 337363.52, 330835.92, 345426.33, 346413.57, 338088.95, 332059.58, 323078.26, 343027.33, 342661.08, 345886.86, 366258.75, 365840.47, 356931.67, 356303.73, 350581.96, 353997.37, 354307.08, 345263.95, 346084.57, 345713.37, 336756.43, 337263.35, 336500.41, 336519.23, 346952.33, 342516.07, 341936.88, 353211.45, 354131.55, 356677.27, 348094.41, 351419.97, 351300.69, 342393.89, 337121.07, 331660.25, 337421.09, 337620.31, 328667.87, 320314.95, 311203.62, 314807.78, 315054.06, 316314.3, 321317.99, 320984.22, 324179.18, 324053.41, 315163.58, 311002.52, 312126.29, 303455.56, 298835.67, 292774.78, 292534.51, 289727.02, 289250.26, 293889.76, 299098.1, 298803.33, 303421.08, 310338.66, 309609.94, 325793.99, 330349.23, 328896.27, 329318.03, 320823.26, 314936.29, 321742.14, 316097.08, 323705.4, 317137.74, 309062.99, 310648.65, 305225.4, 305075.15, 308937.46, 300425.25, 300873.67, 299741.91, 291413.59, 303239.05, 303158.79, 303261.56, 304502.34, 304488.61, 295821.29, 314210.17, 314519.89, 322134.84, 322158.56, 325968.28, 329207.17, 319547.05, 334723.85, 335456.05, 326305.6, 316763.63, 316125.94, 306990.32, 308352.95, 308233.65, 309334.87, 303238.01, 302782.33, 305892.71, 302688.02, 302724.69, 322995.02, 322466.17, 328284.48, 332310.42, 332036.78, 322384.7, 323683.49, 325469.21, 325739.86, 316055.89, 315653.44, 315462.6, 305859.97, 304976.84, 304947.11, 298542.64, 296943.41, 295928.76, 286434.79, 310609.46, 311044.56, 310850.88, 310817.74, 312606.06, 320109.14, 320901.49, 323345.56, 312539.28, 305335.8, 297881.2, 297276.07, 307589.05, 343498.95, 339205.48, 338748.16, 360318.52, 360667.19, 380621.56, 380952.27, 381131.92, 388389.22, 388952.37, 450790.17, 450644.78, 452001.07, 451473.98, 451544.89, 441293.87, 451730.23, 451695.31, 441178.3, 441328.94, 445333.29, 445161.87, 459552.31, 459488.72, 459460.29, 448836.6, 438930.2, 446158.03, 445110.97, 434549.57, 449151.19, 449272.24, 438471.55, 431523.36, 420722.43, 447222.62, 446318.55, 435897.57, 426704.05, 429514.14, 432483.23, 431774.17, 421220.37, 431180.21, 423378.73, 428958.84, 430490.4, 419730.48, 412347.88, 405666.81, 406036.76, 409301.69, 419700.55, 420045.85, 409155.91, 402603.15, 392897.11, 387262.0, 386640.72, 397895.59, 399117.92, 393961.49, 381249.42, 383582.76, 383344.99, 400577.44, 390918.64, 392586.84, 392336.04, 381645.86, 376342.8, 374625.58, 375289.39, 397111.7, 402515.02, 402402.05, 391299.94, 385326.54, 391926.37, 391215.41, 397387.34, 405012.11, 398680.8, 408553.53, 408445.75, 422190.9, 415301.06, 417970.86, 417578.41, 437803.01, 437699.79, 464318.34, 467032.15, 457094.45, 497891.55, 502914.3, 506085.73, 500688.72, 499792.47, 520754.73, 520956.97, 509406.72, 520675.49, 521781.22, 537760.86, 536679.56, 536712.78, 542643.22, 536382.09, 542452.3, 541426.0, 529865.4, 523178.71, 516135.12, 509693.63, 508163.76, 513650.32, 515287.84, 514845.41, 519550.03, 512776.36, 505818.0, 504911.93, 508042.13, 551389.86, 549496.43, 536385.42, 551891.09, 550972.03, 572236.41, 571811.34, 589247.19, 588828.6, 577339.43, 583662.71, 586499.12, 586473.8, 610224.4, 609480.81, 610244.8, 617461.89, 617760.34, 631582.22, 630961.09, 664706.0, 659158.3, 654861.98, 651070.68, 652364.86, 640833.46, 632430.09, 649499.78, 648504.85, 663315.46, 667613.88, 665850.11, 672179.92, 677420.01, 677267.97, 686843.31, 679553.18, 693764.95, 693894.49, 716185.0, 727056.78, 726958.81, 731208.82, 759079.97, 761894.85, 762110.06, 750253.68, 763260.07, 762727.77, 777525.77, 773949.26, 773982.45, 761920.19, 755864.8, 744101.04, 760969.49, 761401.3, 779236.15, 787749.91, 794208.55, 793954.59, 782324.48, 772531.94, 780635.33, 791110.26, 799186.67, 803892.56, 799192.67, 787069.84, 776591.14, 779330.28, 779147.78, 767890.71, 757471.63, 768838.22, 767691.7, 756065.27, 783016.28, 783142.54, 789871.36, 795120.2, 792599.92, 792976.42, 818209.92, 819038.15, 842400.58, 840327.36, 841006.07, 830185.66, 832044.39, 837111.14, 837615.72, 837210.26, 860070.58, 860428.85, 914627.46, 908330.36, 895503.53, 917777.79, 918719.8, 907373.03, 988675.96, 981487.15, 998734.83, 999668.33, 1052987.58, 1053027.29, 1053644.81, 1046980.7, 1037104.21, 1039734.49, 1039247.7, 1043841.65, 1035054.84, 1035185.55, 1023243.99, 1025719.4, 1029008.59, 1040767.95, 1040286.53, 1028195.65, 1032761.61, 1029023.2, 1018510.46, 1020321.68, 1020474.01, 1027706.17, 1016974.2, 1018383.77, 1035539.2, 1034909.37, 1022610.58, 1016757.57, 1016868.75, 1023324.72, 1035903.12, 1040778.72, 1042069.24, 1041286.64, 1029007.7, 1020299.03, 1020396.14, 1041862.16, 1041793.44, 1039469.19, 1039560.87, 1027278.56, 1020507.0, 1013842.93, 1017902.89, 1015806.93, 1015998.25, 1024459.88, 1024315.04, 1020598.99, 1020778.44, 1052621.59, 1053090.27, 1040844.13, 1047485.75, 1047368.33, 1054334.69, 1049093.08, 1048365.77, 1062554.55, 1052417.19, 1052087.59, 1052618.02, 1076427.13, 1077035.55, 1077196.52, 1065356.34, 1067829.37, 1067861.47, 1104161.41, 1103813.23, 1091757.1, 1105361.15, 1105257.82, 1107790.43, 1104480.72, 1105565.82, 1093258.67, 1125289.7, 1115704.36, 1113945.76, 1113130.65, 1100417.5, 1107175.24, 1107048.11, 1112564.85, 1116447.82, 1116601.22, 1123784.55, 1123783.72, 1123959.86, 1133709.39, 1144195.18, 1144516.56, 1132986.31, 1128169.44, 1136701.51, 1135843.15, 1144231.52, 1136212.16, 1128164.7, 1128626.84, 1149419.87, 1149469.25, 1136648.33, 1140998.52, 1140536.73, 1140351.12, 1174012.12, 1168203.29, 1167874.66, 1202328.65, 1203537.25, 1208279.79, 1216552.45, 1218912.43, 1210188.11, 1221659.34, 1217053.91, 1216287.55, 1204496.09, 1194206.99, 1200603.64, 1200038.78, 1187344.68, 1188288.67, 1188500.57, 1175897.65, 1183045.4, 1182625.76, 1170165.44, 1163118.23, 1199897.76, 1195080.84, 1226455.95, 1236693.17, 1225746.73, 1226197.77, 1225876.76, 1233893.14, 1235941.94, 1236172.21, 1229434.37, 1230130.64, 1253339.31, 1260144.14, 1274612.79, 1270342.28, 1259117.66, 1248849.49, 1282755.0, 1290735.76, 1290424.45, 1278909.34, 1280919.68, 1269938.58, 1264963.22, 1259751.96, 1254511.43, 1247019.0, 1236216.97, 1240192.77, 1282716.7, 1282449.72, 1270989.26, 1260278.14, 1253251.97, 1252836.84, 1253561.12, 1255077.5, 1249400.35, 1243513.33, 1247624.5, 1240665.55, 1234551.49, 1235483.73, 1230525.01, 1229907.02, 1218519.69, 1212983.84, 1206242.14, 1209260.07, 1209312.79, 1210721.72, 1201110.32, 1189411.87, 1183035.1, 1171965.73];
+        const obMonthlyData = {"2022-01": {"trades": 10, "gross_pnl": 21378.59, "charges": 600.0, "net_pnl": 20778.59}, "2022-02": {"trades": 17, "gross_pnl": 66216.60000000002, "charges": 1020.0, "net_pnl": 65196.60000000001}, "2022-03": {"trades": 17, "gross_pnl": -36576.700000000004, "charges": 1020.0, "net_pnl": -37596.7}, "2022-04": {"trades": 15, "gross_pnl": 24229.900000000005, "charges": 900.0, "net_pnl": 23329.900000000005}, "2022-05": {"trades": 21, "gross_pnl": 25445.649999999998, "charges": 1260.0, "net_pnl": 24185.649999999998}, "2022-06": {"trades": 18, "gross_pnl": 15024.150000000003, "charges": 1080.0, "net_pnl": 13944.150000000003}, "2022-07": {"trades": 14, "gross_pnl": 24553.71, "charges": 840.0, "net_pnl": 23713.71}, "2022-08": {"trades": 11, "gross_pnl": 83122.77, "charges": 660.0, "net_pnl": 82462.77}, "2022-09": {"trades": 20, "gross_pnl": -16875.110000000004, "charges": 1200.0, "net_pnl": -18075.110000000004}, "2022-10": {"trades": 14, "gross_pnl": -1212.6999999999994, "charges": 840.0, "net_pnl": -2052.6999999999994}, "2022-11": {"trades": 11, "gross_pnl": -8470.43, "charges": 660.0, "net_pnl": -9130.43}, "2022-12": {"trades": 15, "gross_pnl": -4196.180000000004, "charges": 900.0, "net_pnl": -5096.180000000004}, "2023-01": {"trades": 15, "gross_pnl": -18633.96, "charges": 900.0, "net_pnl": -19533.96}, "2023-02": {"trades": 16, "gross_pnl": 18151.74, "charges": 960.0, "net_pnl": 17191.74}, "2023-03": {"trades": 15, "gross_pnl": -37004.44, "charges": 900.0, "net_pnl": -37904.44}, "2023-04": {"trades": 6, "gross_pnl": 4767.700000000001, "charges": 360.0, "net_pnl": 4407.700000000001}, "2023-05": {"trades": 10, "gross_pnl": 31084.309999999994, "charges": 600.0, "net_pnl": 30484.309999999994}, "2023-06": {"trades": 9, "gross_pnl": -19872.889999999996, "charges": 540.0, "net_pnl": -20412.889999999996}, "2023-07": {"trades": 9, "gross_pnl": 18330.780000000006, "charges": 540.0, "net_pnl": 17790.780000000006}, "2023-08": {"trades": 11, "gross_pnl": -27094.73, "charges": 660.0, "net_pnl": -27754.73}, "2023-09": {"trades": 6, "gross_pnl": 17037.3, "charges": 360.0, "net_pnl": 16677.3}, "2023-10": {"trades": 11, "gross_pnl": 26802.1, "charges": 660.0, "net_pnl": 26142.1}, "2023-11": {"trades": 7, "gross_pnl": 50624.21, "charges": 420.0, "net_pnl": 50204.21}, "2023-12": {"trades": 12, "gross_pnl": 56929.500000000015, "charges": 720.0, "net_pnl": 56209.500000000015}, "2024-01": {"trades": 21, "gross_pnl": -22681.5, "charges": 1260.0, "net_pnl": -23941.5}, "2024-02": {"trades": 17, "gross_pnl": -22304.78, "charges": 1020.0, "net_pnl": -23324.78}, "2024-03": {"trades": 14, "gross_pnl": 56.11000000000422, "charges": 840.0, "net_pnl": -783.8899999999958}, "2024-04": {"trades": 8, "gross_pnl": 8380.41, "charges": 480.0, "net_pnl": 7900.410000000001}, "2024-05": {"trades": 11, "gross_pnl": 62680.03999999999, "charges": 660.0, "net_pnl": 62020.03999999999}, "2024-06": {"trades": 12, "gross_pnl": 71448.70999999999, "charges": 720.0, "net_pnl": 70728.70999999999}, "2024-07": {"trades": 18, "gross_pnl": -31768.93, "charges": 1080.0, "net_pnl": -32848.93}, "2024-08": {"trades": 8, "gross_pnl": 67379.40999999999, "charges": 480.0, "net_pnl": 66899.40999999999}, "2024-09": {"trades": 11, "gross_pnl": 46609.0, "charges": 660.0, "net_pnl": 45949.0}, "2024-10": {"trades": 13, "gross_pnl": 50633.54, "charges": 780.0, "net_pnl": 49853.54}, "2024-11": {"trades": 16, "gross_pnl": 83599.8, "charges": 960.0, "net_pnl": 82639.8}, "2024-12": {"trades": 17, "gross_pnl": 31401.65, "charges": 1020.0, "net_pnl": 30381.65}, "2025-01": {"trades": 9, "gross_pnl": -12204.62, "charges": 540.0, "net_pnl": -12744.62}, "2025-02": {"trades": 12, "gross_pnl": 51867.44, "charges": 720.0, "net_pnl": 51147.44}, "2025-03": {"trades": 12, "gross_pnl": 90012.20999999999, "charges": 720.0, "net_pnl": 89292.20999999999}, "2025-04": {"trades": 15, "gross_pnl": 131817.34, "charges": 900.0, "net_pnl": 130917.34000000001}, "2025-05": {"trades": 14, "gross_pnl": -17933.689999999995, "charges": 840.0, "net_pnl": -18773.689999999995}, "2025-06": {"trades": 11, "gross_pnl": 20964.71, "charges": 660.0, "net_pnl": 20304.71}, "2025-07": {"trades": 12, "gross_pnl": -26215.79, "charges": 720.0, "net_pnl": -26935.79}, "2025-08": {"trades": 12, "gross_pnl": 34245.40000000001, "charges": 720.0, "net_pnl": 33525.40000000001}, "2025-09": {"trades": 15, "gross_pnl": 57344.9, "charges": 900.0, "net_pnl": 56444.9}, "2025-10": {"trades": 12, "gross_pnl": -2675.7299999999996, "charges": 720.0, "net_pnl": -3395.7299999999996}, "2025-11": {"trades": 12, "gross_pnl": 33288.80999999999, "charges": 720.0, "net_pnl": 32568.80999999999}, "2025-12": {"trades": 10, "gross_pnl": 4262.020000000002, "charges": 600.0, "net_pnl": 3662.0200000000023}, "2026-01": {"trades": 11, "gross_pnl": 82924.09999999999, "charges": 660.0, "net_pnl": 82264.09999999999}, "2026-02": {"trades": 16, "gross_pnl": -54834.2, "charges": 960.0, "net_pnl": -55794.2}, "2026-03": {"trades": 14, "gross_pnl": 97865.91000000002, "charges": 840.0, "net_pnl": 97025.91000000002}, "2026-04": {"trades": 13, "gross_pnl": -4852.709999999999, "charges": 780.0, "net_pnl": -5632.709999999999}, "2026-05": {"trades": 14, "gross_pnl": -6046.9299999999985, "charges": 840.0, "net_pnl": -6886.9299999999985}, "2026-06": {"trades": 15, "gross_pnl": -74758.77, "charges": 900.0, "net_pnl": -75658.77}};
+        const combinedEquityCurve = [300000.0, 299153.4705001246, 309092.8033972099, 318225.9835237431, 325599.04101201746, 320439.3997220296, 331102.13608148025, 337800.33197856846, 358612.0927161528, 354693.0691418756, 338273.26797959674, 345706.9841618611, 367989.209173026, 369449.18325971754, 374085.2659815267, 394840.9721587852, 397405.30575658527, 413941.5162194645, 430408.0675854633, 438938.9694721451, 439564.15551797097, 436420.5594539193, 432567.4614597026, 454498.1886125171, 453017.38867987576, 475163.0925799503, 472719.8694205261, 468788.86910142587, 459037.31628754665, 457370.74637706194, 478016.41490012617, 469490.03311799443, 466995.8440296507, 475722.173781588, 471989.647134927, 482612.73278748733, 479319.4360925168, 481548.14431711286, 486633.20957677765, 477855.00047289033, 472464.8917730056, 474910.03718464647, 472735.8613486696, 477899.92874022364, 479759.5803424299, 486888.30548073724, 515541.195110926, 516771.08013484435, 518862.2789703119, 508499.42271208216, 510373.2697149131, 518611.50602677837, 536647.2543666123, 535498.2800026408, 540252.7078596918, 538106.7287941598, 539395.2683409281, 546151.9355104122, 554517.6884015817, 550233.5604348794, 545593.8671208153, 552551.5095656659, 556604.0903522673, 572113.1294069975, 572329.9147536808, 586082.6115173565, 588813.9069555977, 582181.0611922435, 593981.6145468462, 594349.3438718314, 598553.5214605224, 599576.2467843378, 597959.0310316598, 591699.3011165855, 595024.4302680335, 595560.3550536105, 602881.7667550935, 597903.519953533, 604681.3657652504, 605254.2002463662, 604919.9807317997, 613710.5344737448, 605401.8097871193, 599609.8149500047, 608256.9446556643, 609822.086413088, 619668.2945910039, 615929.9837685073, 642297.6369841907, 639018.7633080245, 631726.9663901937, 624899.2328707034, 640550.0066757232, 640414.7247498638, 630743.5764531372, 632538.9660788083, 628346.9445490986, 630561.574765662, 638267.3882692622, 631823.0966121961, 629383.2309613058, 629203.1893805894, 628307.073249165, 658745.7914268537, 643900.8104802492, 652640.2772610215, 644462.0673191354, 666454.1177972136, 673839.7125894849, 679253.452283249, 683158.6068225002, 673917.8346554957, 666750.5418936736, 698244.3820690827, 701097.5580451261, 727511.7472805497, 726366.5244522183, 727752.7669756978, 746025.990827855, 733485.8720041402, 724617.6553464099, 698869.6663225503, 714062.0486726591, 719301.3918300874, 712108.1891261736, 713938.6203643271, 721113.3060469152, 725546.7423321346, 716902.2446939447, 710482.955457952, 705596.4335001665, 710673.6086635718, 718149.1151763559, 708654.7440967076, 707346.8688845212, 718946.5476634533, 724670.1435565318, 724882.5358165173, 707748.3799751468, 716606.7657705501, 724303.5987536614, 723982.4329737574, 733943.5832734054, 738790.2786809662, 736110.8655673112, 727893.884036678, 737247.798777114, 736350.2525909105, 743277.5270948543, 745799.3780505504, 746609.6200304742, 747099.7940119882, 744895.966239006, 737785.3735273877, 734661.9517966965, 761069.712684036, 766374.25569957, 773277.6719545473, 778272.7459925892, 785788.5287285985, 775760.4372831164, 776587.9269095976, 769893.7417509982, 774877.5951699889, 782662.0717236276, 781804.693780528, 783419.3998519909, 787081.611782399, 777649.1118237544, 771887.0795221629, 758868.1861599397, 764385.8081995628, 782563.9445330382, 776289.0513346225, 741491.2965414398, 739006.4353627611, 747173.7179763779, 748097.5790511756, 744500.0580097338, 748715.415000166, 749236.1419288529, 738242.0969412217, 737539.1508119316, 731486.0606052618, 736877.8752971955, 736465.4922295669, 732618.252235492, 723236.6040467704, 715465.1063414225, 724262.384977282, 725211.3897816249, 729988.7030569089, 735271.296662913, 734573.5305262445, 738139.129795287, 738672.5117275154, 729903.0864180855, 726237.9614121544, 727422.2777360649, 719082.3826704025, 715073.8844653405, 709494.5226082958, 709372.9049161657, 706427.0959116765, 706570.5317166953, 711430.668870982, 716372.2607754165, 715015.2485111293, 718849.0579211952, 725004.4831193766, 724640.7990768899, 744729.9461519165, 750936.6315046172, 749431.8801604833, 756519.4601344872, 747671.5346370699, 743814.1375045766, 750846.6802379115, 745165.0584756442, 752322.3720937854, 751741.3631607273, 748399.0403445098, 747847.0571555492, 741189.2075377016, 740771.0162204752, 744200.3608404859, 734369.8566917453, 746051.0774449627, 746094.9525436938, 745440.2511215021, 755685.272123989, 763845.2183467152, 774301.906479498, 781100.5476398536, 789364.9300052263, 786128.7018928783, 805898.4757858099, 805944.4510191341, 812863.6747537463, 820218.3845832471, 823323.1751174686, 825946.8624386508, 816312.4852630207, 836919.1489012176, 837289.5127559059, 829930.1657924894, 819988.8718511624, 820210.0583177274, 811888.265054069, 822703.3789617245, 823336.1953713088, 808524.2379065356, 808891.7005842503, 799641.8559820128];
+
+        // ---- Tab switcher ----
+        function switchTab(name) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+            event.target.classList.add('active');
+            if (name === 'optbuy' && !window._obChartsInit) { initObCharts(); window._obChartsInit = true; }
+            if (name === 'combined' && !window._combinedChartsInit) { initCombinedChart(); window._combinedChartsInit = true; }
+        }
+
+        // ---- 5m OB Equity Chart ----
+        function initObCharts() {
+            const ctx2 = document.getElementById('obEquityChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: obEquityCurve.length}, (_, i) => i),
+                    datasets: [{
+                        label: '5m OB Equity (Rs.)',
+                        data: obEquityCurve,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245,158,11,0.07)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { display: false }, y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Populate OB monthly table
+            const tbody = document.getElementById('obMonthlyBody');
+            const sortedKeys = Object.keys(obMonthlyData).sort();
+            sortedKeys.forEach(k => {
+                const v = obMonthlyData[k];
+                const net = v.net_pnl;
+                const color = net >= 0 ? '#10b981' : '#ef4444';
+                tbody.innerHTML += `<tr>
+                    <td>${k}</td>
+                    <td>${v.trades}</td>
+                    <td>Rs. ${v.gross_pnl.toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+                    <td>Rs. ${v.charges.toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+                    <td style="color:${color};font-weight:600">Rs. ${net.toLocaleString('en-IN', {maximumFractionDigits:0})}</td>
+                </tr>`;
+            });
+        }
+
+        // ---- Combined Equity Chart ----
+        function initCombinedChart() {
+            const ctx3 = document.getElementById('combinedEquityChart').getContext('2d');
+            new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: combinedEquityCurve.length}, (_, i) => i),
+                    datasets: [{
+                        label: 'Combined Portfolio (Rs.)',
+                        data: combinedEquityCurve,
+                        borderColor: '#8b5cf6',
+                        backgroundColor: 'rgba(139,92,246,0.07)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { x: { display: false }, y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // 1. Chart.js Equity Curve
+        const ctx = document.getElementById('equityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: equityCurve.length}, (_, i) => i),
+                datasets: [{
+                    label: 'Portfolio Equity (Rs.)',
+                    data: equityCurve,
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.05)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { display: false },
+                    y: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 2. Heatmap Render function
+        let selectedYear = 2022;
+        
+        function renderHeatmap(year) {
+            const container = document.getElementById('heatmapContainer');
+            container.innerHTML = '';
+            
+            const grid = document.createElement('div');
+            grid.style.display = 'grid';
+            grid.style.gridTemplateRows = 'repeat(7, 12px)';
+            grid.style.gridAutoFlow = 'column';
+            grid.style.gap = '3px';
+            grid.style.padding = '10px';
+            grid.style.backgroundColor = '#ffffff';
+            grid.style.borderRadius = '8px';
+            grid.style.border = '1px solid #e2e8f0';
+            
+            const startDate = new Date(year, 0, 1);
+            const endDate = new Date(year, 11, 31);
+            
+            // Align first column by adding dummy empty cells
+            const startDay = startDate.getDay(); // 0 is Sunday
+            for (let i = 0; i < startDay; i++) {
+                const dummy = document.createElement('div');
+                dummy.style.width = '12px';
+                dummy.style.height = '12px';
+                dummy.style.backgroundColor = 'transparent';
+                grid.appendChild(dummy);
+            }
+            
+            let cur = new Date(startDate);
+            while (cur <= endDate) {
+                const yearStr = cur.getFullYear();
+                const monthStr = String(cur.getMonth() + 1).padStart(2, '0');
+                const dayStr = String(cur.getDate()).padStart(2, '0');
+                const dateStr = `${yearStr}-${monthStr}-${dayStr}`;
+                
+                const pnl = bookedPnls[dateStr];
+                
+                const cell = document.createElement('div');
+                cell.style.width = '12px';
+                cell.style.height = '12px';
+                cell.style.borderRadius = '2px';
+                
+                if (pnl === undefined) {
+                    cell.style.backgroundColor = '#f1f5f9'; // No squared off position on this day
+                } else if (Math.abs(pnl) < 1) {
+                    cell.style.backgroundColor = '#e2e8f0'; // Breakeven trade
+                } else if (pnl > 0) {
+                    const intensity = Math.min(0.3 + (pnl / 4000) * 0.7, 1.0);
+                    cell.style.backgroundColor = `rgba(16, 185, 129, ${intensity})`;
+                    cell.style.border = '1px solid rgba(16, 185, 129, 0.2)';
+                    cell.title = `${dateStr} | Realised Profit: +Rs. ${pnl.toFixed(2)}`;
+                } else {
+                    const intensity = Math.min(0.3 + (Math.abs(pnl) / 4000) * 0.7, 1.0);
+                    cell.style.backgroundColor = `rgba(239, 68, 68, ${intensity})`;
+                    cell.style.border = '1px solid rgba(239, 68, 68, 0.2)';
+                    cell.title = `${dateStr} | Realised Loss: -Rs. ${Math.abs(pnl).toFixed(2)}`;
+                }
+                
+                grid.appendChild(cell);
+                cur.setDate(cur.getDate() + 1);
+            }
+            container.appendChild(grid);
+        }
+        
+        function setYear(year) {
+            selectedYear = year;
+            const btns = document.querySelectorAll('.year-btn');
+            btns.forEach(b => {
+                if (b.innerText === String(year)) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+            renderHeatmap(year);
+        }
+        
+        // 3. Monthly Performance Table
+        function renderMonthlyTable(year) {
+            const container = document.getElementById('monthlyTableContainer');
+            const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            let yearTrades = 0, yearGross = 0, yearCharges = 0, yearNet = 0;
+            
+            let rows = '';
+            for (let m = 1; m <= 12; m++) {
+                const key = `${year}-${String(m).padStart(2,'0')}`;
+                const d = monthlyData[key];
+                if (d) {
+                    const netColor = d.net_pnl >= 0 ? '#10b981' : '#ef4444';
+                    rows += `<tr>
+                        <td style="font-weight:600;">${months[m-1]} ${year}</td>
+                        <td>${d.trades}</td>
+                        <td>Rs. ${d.gross_pnl.toFixed(2)}</td>
+                        <td style="color:#ef4444;">Rs. ${d.charges.toFixed(2)}</td>
+                        <td style="color:${netColor};font-weight:600;">Rs. ${d.net_pnl.toFixed(2)}</td>
+                    </tr>`;
+                    yearTrades += d.trades;
+                    yearGross += d.gross_pnl;
+                    yearCharges += d.charges;
+                    yearNet += d.net_pnl;
+                } else {
+                    rows += `<tr style="color:#cbd5e1;">
+                        <td>${months[m-1]} ${year}</td>
+                        <td>0</td><td>-</td><td>-</td><td>-</td>
+                    </tr>`;
+                }
+            }
+            
+            const totalColor = yearNet >= 0 ? '#10b981' : '#ef4444';
+            container.innerHTML = `
+                <table style="width:100%;border-collapse:collapse;font-size:13px;">
+                    <thead>
+                        <tr style="border-bottom:2px solid #e2e8f0;">
+                            <th style="text-align:left;padding:10px 12px;color:#64748b;font-weight:600;">Month</th>
+                            <th style="text-align:left;padding:10px 12px;color:#64748b;font-weight:600;">Trades</th>
+                            <th style="text-align:left;padding:10px 12px;color:#64748b;font-weight:600;">Gross P&L</th>
+                            <th style="text-align:left;padding:10px 12px;color:#64748b;font-weight:600;">Charges & Brokerage</th>
+                            <th style="text-align:left;padding:10px 12px;color:#64748b;font-weight:600;">Net P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rows}
+                        <tr style="border-top:2px solid #e2e8f0;font-weight:700;">
+                            <td style="padding:12px;">Total ${year}</td>
+                            <td style="padding:12px;">${yearTrades}</td>
+                            <td style="padding:12px;">Rs. ${yearGross.toFixed(2)}</td>
+                            <td style="padding:12px;color:#ef4444;">Rs. ${yearCharges.toFixed(2)}</td>
+                            <td style="padding:12px;color:${totalColor};">Rs. ${yearNet.toFixed(2)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+        
+        // Initial draw
+        setYear(2022);
+        renderMonthlyTable(2022);
+        
+        // Override setYear to also update table
+        const _origSetYear = setYear;
+        setYear = function(year) {
+            _origSetYear(year);
+            renderMonthlyTable(year);
+        };
+    </script>
+</body>
+</html>

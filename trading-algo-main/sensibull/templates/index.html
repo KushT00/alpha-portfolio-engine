@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Sensibull Position Tracker</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #f4f4f9;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        tr:hover {
+            background: #f1f1f1;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .zero {
+            color: #ccc;
+            font-weight: normal;
+        }
+    </style>
+</head>
+
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1>Sensibull Tracker Dashboard</h1>
+            {% if last_updated %}
+            <div style="color: #666; font-size: 0.9em; margin-top: -10px;">
+                Last Updated: {{ last_updated | to_datetime | attr('strftime')('%H:%M:%S') }}
+                {% if scraper_error %}
+                <span style="color: red; font-weight: bold; margin-left: 10px;">
+                    ⚠ {{ scraper_error }}
+                </span>
+                {% else %}
+                <span style="color: green; font-weight: bold; margin-left: 10px;">
+                    Scrapper Running
+                </span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <button onclick="restartApp()"
+            style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">Restart
+            Scraper</button>
+    </div>
+    <script>
+        function restartApp() {
+            if (confirm("Are you sure you want to restart the scraper?")) {
+                fetch('/restart', { method: 'POST' })
+                    .then(response => response.text())
+                    .then(text => {
+                        alert(text);
+                        setTimeout(() => location.reload(), 3000);
+                    })
+                    .catch(err => alert("Error restarting: " + err));
+            }
+        }
+
+        // Auto-refresh every 60 seconds
+        setInterval(() => {
+            console.log("Auto-refreshing dashboard...");
+            location.reload();
+        }, 60000);
+
+        function deleteDate(date) {
+            if (confirm("Are you sure you want to delete ALL data for " + date + "? This cannot be undone.")) {
+                fetch('/delete_date/' + date, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert("Error: " + (data.error || "Unknown error"));
+                        }
+                    })
+                    .catch(err => alert("Error deleting: " + err));
+            }
+        }
+    </script>
+    <div style="overflow-x: auto; width: 100%;">
+        <table>
+            <thead>
+                <tr>
+                    <th style="position: sticky; left: 0; background: #eee; z-index: 1;">Profile</th>
+                    {% for date in dates %}
+                    <th style="min-width: 100px;">
+                        {{ date }}
+                        <span onclick="deleteDate('{{ date }}')"
+                            style="cursor: pointer; margin-left: 5px; color: #dc3545;"
+                            title="Delete data for {{ date }}">&#128465;</span>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile in profiles %}
+                <tr>
+                    <td
+                        style="text-align: left; font-weight: bold; position: sticky; left: 0; background: #fff; z-index: 1; border-right: 2px solid #ddd;">
+                        {{ profile.name }}</td>
+                    {% for date in dates %}
+                    <td>
+                        {% set val = matrix.get((profile.id, date), {'count': 0, 'pnl': 0}) %}
+                        {% if val.count > 0 %}
+                        <a href="{{ url_for('daily_view', slug=profile.slug, date=date) }}" target="_blank">{{ val.count
+                            }}</a>
+                        <div
+                            style="font-size: 0.85em; margin-top: 4px; font-weight: bold; color: {{ '#28a745' if val.pnl > 0 else '#dc3545' if val.pnl < 0 else '#666' }};">
+                            {{ "{:,.1f}".format(val.pnl) }}
+                        </div>
+                        {% else %}
+                        <span class="zero">-</span>
+                        {% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

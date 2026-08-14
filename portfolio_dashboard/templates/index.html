@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIFTY Positions & Greeks Dashboard</title>
+    <!-- Google Fonts & Chart.js -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --card-bg: rgba(21, 28, 46, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-blue: #3b82f6;
+            --accent-orange: #f97316;
+            --accent-purple: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* HEADER */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 18px 24px;
+            border-radius: 16px;
+        }
+
+        .brand-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .flag-icon {
+            font-size: 24px;
+        }
+
+        .brand-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-badges {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .spot-badge {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--accent-green);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .vix-badge {
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: var(--accent-purple);
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .timer-badge {
+            background: rgba(59, 130, 246, 0.12);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: var(--accent-blue);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-refresh {
+            background: #1e293b;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-refresh:hover {
+            background: #334155;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* SECTION HEADER & CONTROLS */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .filters-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .filter-input {
+            background: #1e293b;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 8px;
+            width: 70px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        /* KPI CARDS GRID */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .kpi-label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.5px;
+        }
+
+        .kpi-subtext {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        /* SENTIMENT CARD */
+        .sentiment-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .sentiment-badge {
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stress-box {
+            display: flex;
+            gap: 24px;
+            background: rgba(15, 23, 42, 0.6);
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            flex-wrap: wrap;
+        }
+
+        .stress-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stress-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .stress-val {
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* CHART CONTAINER */
+        .chart-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 340px;
+            width: 100%;
+        }
+
+        .btn-toggle {
+            background: #1e293b;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 6px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-toggle:hover {
+            background: #334155;
+        }
+
+        /* TABLE CONTAINER */
+        .table-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-weight: 500;
+        }
+
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tag-ce {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--accent-red);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .tag-pe {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .tag-closed {
+            background: rgba(148, 163, 184, 0.2);
+            color: #cbd5e1;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 11px;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .text-green {
+            color: var(--accent-green);
+        }
+
+        .text-red {
+            color: var(--accent-red);
+        }
+
+        .text-blue {
+            color: var(--accent-blue);
+        }
+
+        .text-orange {
+            color: var(--accent-orange);
+        }
+
+        /* POSITION GUARD ALERT BANNER */
+        .guard-banner {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 14px;
+            padding: 14px 20px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .guard-banner.visible {
+            display: flex;
+        }
+
+        .guard-banner-title {
+            font-weight: 800;
+            color: #ef4444;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .guard-alert-item {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fca5a5;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .guard-alert-high {
+            color: #ef4444;
+        }
+
+        .guard-alert-warn {
+            color: #f97316;
+        }
+
+        /* PER-EXPIRY GREEKS TABLE */
+        .expiry-greeks-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* STALE DATA BANNER */
+        .stale-banner {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 14px;
+            padding: 10px 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #fbbf24;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .stale-banner.visible {
+            display: flex;
+        }
+
+        .stale-dot {
+            width: 8px;
+            height: 8px;
+            background: #f59e0b;
+            border-radius: 50%;
+            flex-shrink: 0;
+            animation: pulse 2s infinite;
+        }
+
+        /* PULSE ANIMATION */
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px var(--accent-green);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- STALE DATA BANNER -->
+        <div class="stale-banner" id="staleBanner">
+            <span class="stale-dot"></span>
+            <span>⚠️ OpenAlgo unreachable — showing <strong>cached positions</strong> from <span id="staleFrom">--:--:--</span></span>
+        </div>
+
+        <!-- #1 POSITION GUARD ALERT BANNER (hidden until triggered) -->
+        <div class="guard-banner" id="guardBanner">
+            <span class="guard-banner-title">⚠️ DUPLICATE LONG DETECTED</span>
+            <div id="guardAlerts" style="display:flex; gap:8px; flex-wrap:wrap;"></div>
+            <span style="font-size:12px; color:var(--text-muted); margin-left:auto;" id="guardCheckedAt"></span>
+        </div>
+
+        <!-- HEADER -->
+        <header>
+            <div class="brand-title">
+                <span class="flag-icon">🇮🇳</span>
+                <h1>NIFTY Positions Dashboard</h1>
+            </div>
+
+            <div class="header-badges">
+                <div class="spot-badge">
+                    <span class="live-dot"></span>
+                    <span>NIFTY Spot: <span id="spotPrice" class="mono">0.00</span></span>
+                </div>
+
+                <div class="vix-badge">
+                    <span>INDIA VIX: <span id="vixVal" class="mono">0.00</span></span>
+                </div>
+
+                <div class="timer-badge">
+                    <span>⏱ Auto-refresh in <span id="countdown">30</span>s</span>
+                </div>
+
+                <button class="btn-refresh" onclick="fetchData()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
+                    </svg>
+                    Refresh
+                </button>
+            </div>
+        </header>
+
+        <!-- OVERALL SECTION HEADER & CONTROLS -->
+        <div>
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                        <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                    </svg>
+                    Overall NIFTY Positions
+                </div>
+
+                <div class="filters-bar">
+                    <div class="filter-group">
+                        <label for="minPremium">Min Premium:</label>
+                        <input type="number" id="minPremium" class="filter-input" value="0" onchange="fetchData()">
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="minDays">Min Days:</label>
+                        <input type="number" id="minDays" class="filter-input" value="0" onchange="fetchData()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI CARDS GRID —- existing 5 + 2 new: Time Value & ITM Risk -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Puts Sold</div>
+                    <div class="kpi-value text-orange" id="putsSold">0</div>
+                    <div class="kpi-subtext"><span id="putsSoldLots" class="mono">0</span> Lots (PE)</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">Calls Sold</div>
+                    <div class="kpi-value text-blue" id="callsSold">0</div>
+                    <div class="kpi-subtext"><span id="callsSoldLots" class="mono">0</span> Lots (CE)</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">Overall Delta</div>
+                    <div class="kpi-value" id="overallDelta">0.00</div>
+                    <div class="kpi-subtext">Portfolio Directional Bias</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">Overall Theta</div>
+                    <div class="kpi-value text-green" id="overallTheta">₹0.00</div>
+                    <div class="kpi-subtext">Daily Time Decay Income</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">Margin Required</div>
+                    <div class="kpi-value" id="marginReq">₹0.00</div>
+                    <div class="kpi-subtext">Est. Short Position Margin</div>
+                </div>
+
+                <!-- #3 New: Safe Time Value Card -->
+                <div class="kpi-card" style="border-color: rgba(16,185,129,0.25);">
+                    <div class="kpi-label" style="color:#10b981;">Safe Time Value</div>
+                    <div class="kpi-value text-green" id="timeValueTotal">₹0.00</div>
+                    <div class="kpi-subtext">Premium decaying safely to ₹0</div>
+                </div>
+
+                <!-- #3 New: ITM Risk Card -->
+                <div class="kpi-card" style="border-color: rgba(239,68,68,0.25);">
+                    <div class="kpi-label" style="color:#ef4444;">ITM Risk Exposure</div>
+                    <div class="kpi-value text-red" id="itmRiskTotal">₹0.00</div>
+                    <div class="kpi-subtext">Intrinsic value at risk if held</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PORTFOLIO SENTIMENT & STRESS METRICS -->
+        <div class="sentiment-card">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span
+                    style="font-size: 14px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Portfolio
+                    Sentiment:</span>
+                <div class="sentiment-badge" id="sentimentBadge">
+                    DELTA NEUTRAL
+                </div>
+            </div>
+
+            <div class="stress-box">
+                <div class="stress-item">
+                    <span class="stress-label">+100pt Nifty Impact</span>
+                    <span class="stress-val" id="stressPlus">+₹0.00</span>
+                </div>
+                <div class="stress-item" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <span class="stress-label">-100pt Nifty Impact</span>
+                    <span class="stress-val" id="stressMinus">-₹0.00</span>
+                </div>
+                <div class="stress-item" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <span class="stress-label">Open Unrealized PnL</span>
+                    <span class="stress-val" id="unrealizedPnl">₹0.00</span>
+                </div>
+                <div class="stress-item" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <span class="stress-label">Closed Realized PnL</span>
+                    <span class="stress-val" id="realizedPnl">₹0.00</span>
+                </div>
+                <div class="stress-item" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <span class="stress-label">Total Portfolio PnL</span>
+                    <span class="stress-val" id="totalPnl" style="font-size: 17px; font-weight: 800;">₹0.00</span>
+                </div>
+                <!-- #5 Today's Trade Impact -->
+                <div class="stress-item" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <span class="stress-label">Today Δ Delta</span>
+                    <span class="stress-val text-blue" id="todayDelta">0.00</span>
+                </div>
+                <div class="stress-item" style="border-left: 1px solid rgba(255,255,255,0.1); padding-left: 20px;">
+                    <span class="stress-label">Today Θ Theta</span>
+                    <span class="stress-val text-green" id="todayTheta">₹0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAILED POSITIONS TABLE -->
+        <div class="table-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    Positionbook Legs (Open & Closed)
+                </div>
+                <span style="font-size: 12px; color: var(--text-muted);">Updated at <span id="lastUpdated"
+                        class="mono">--:--:--</span></span>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Type</th>
+                        <th>Strike</th>
+                        <th>Status</th>
+                        <th>Qty (Lots)</th>
+                        <th>Avg Price</th>
+                        <th>LTP</th>
+                        <th>IV %</th>
+                        <th>PnL (₹)</th>
+                        <th>Leg Delta</th>
+                        <th>Leg Theta</th>
+                        <th>Leg Vega</th>
+                    </tr>
+                </thead>
+                <tbody id="positionsTableBody">
+                    <tr>
+                        <td colspan="12" style="text-align: center; color: var(--text-muted); padding: 30px;">Loading
+                            live positions...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- #4 PER-EXPIRY GREEKS TABLE -->
+        <div class="expiry-greeks-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                        <path d="M3 9h18M9 21V9" />
+                    </svg>
+                    Per-Expiry Greeks Breakdown
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Expiry</th>
+                        <th>Net Delta</th>
+                        <th>Θ Theta/Day</th>
+                        <th>CE Qty</th>
+                        <th>PE Qty</th>
+                    </tr>
+                </thead>
+                <tbody id="expiryGreeksBody">
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">Loading...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- OPEN POSITIONS BY EXPIRY CHART -->
+        <div class="chart-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    Open Positions by Expiry
+                </div>
+                <button class="btn-toggle" id="btnModeToggle" onclick="toggleDisplayMode()">Show Lots</button>
+            </div>
+
+            <div class="chart-wrapper">
+                <canvas id="expiryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 📈 SENSIBULL-GRADE LIVE PORTFOLIO PAYOFF GRAPH CARD -->
+        <div class="chart-card" style="margin-top: 24px; position: relative;">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                    </svg>
+                    📈 Sensibull Payoff Engine (At Expiry vs T+0 Live BS)
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <select id="payoffExpirySelect" onchange="fetchPayoffGraph()" style="background:#1e293b; border:1px solid var(--card-border); color:var(--text-main); padding:6px 14px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer;">
+                        <option value="ALL">ALL Expiries Combined</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- TOP FLOATING CURRENT PRICE BADGE & SD ANNOTATION HEADERS -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 12px;">
+                <!-- SD Badges -->
+                <div style="display: flex; gap: 8px; font-size: 11px; font-weight: 700; color: var(--text-muted);">
+                    <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--card-border);" id="sdM2">-2SD: --</span>
+                    <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--card-border);" id="sdM1">-1SD: --</span>
+                    <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--card-border);" id="sdP1">+1SD: --</span>
+                    <span style="background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; border: 1px solid var(--card-border);" id="sdP2">+2SD: --</span>
+                </div>
+
+                <!-- Sensibull Current Price Header Pill -->
+                <div style="background: rgba(255, 255, 255, 0.95); color: #0f172a; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 800; border: 1px solid #cbd5e1; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: flex; align-items: center; gap: 6px;">
+                    <span style="width: 8px; height: 8px; border-radius: 50%; background: #ef4444; display: inline-block;"></span>
+                    Current Price: <span id="payoffCurrentSpotHeader" class="mono" style="font-weight:900;">--</span>
+                </div>
+            </div>
+
+            <!-- KPI SUMMARY STRIP -->
+            <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 10px; padding: 8px 14px; flex: 1; min-width: 140px;">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Max Profit (At Expiry)</div>
+                    <div id="payoffMaxProfit" style="font-size: 15px; font-weight: 800; color: var(--accent-green);" class="mono">₹0.00</div>
+                </div>
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 10px; padding: 8px 14px; flex: 1; min-width: 140px;">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Max Loss (At Expiry)</div>
+                    <div id="payoffMaxLoss" style="font-size: 15px; font-weight: 800; color: var(--accent-red);" class="mono">₹0.00</div>
+                </div>
+                <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 10px; padding: 8px 14px; flex: 1; min-width: 170px;">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Breakeven Range</div>
+                    <div id="payoffBreakevens" style="font-size: 14px; font-weight: 700; color: var(--accent-blue);" class="mono">--</div>
+                </div>
+                <div style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 10px; padding: 8px 14px; flex: 1; min-width: 120px;">
+                    <div style="font-size: 10px; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Active Legs</div>
+                    <div id="payoffLegCount" style="font-size: 15px; font-weight: 800; color: var(--accent-purple);" class="mono">0</div>
+                </div>
+            </div>
+
+            <!-- PAYOFF CANVAS -->
+            <div class="chart-wrapper" style="height: 420px; position: relative;">
+                <canvas id="payoffChart"></canvas>
+            </div>
+
+            <!-- SENSIBULL BOTTOM PROJECTED PnL BADGE -->
+            <div style="display: flex; justify-content: center; margin-top: 14px;">
+                <div id="sensibullProjectedBadge" style="background: #dc2626; color: #ffffff; padding: 8px 24px; border-radius: 12px; font-size: 14px; font-weight: 800; letter-spacing: 0.2px; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4); display: flex; align-items: center; gap: 8px;">
+                    Projected PnL (T+0): <span id="sensibullProjectedVal" class="mono" style="font-weight: 900;">₹0.00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAILED POSITIONS TABLE (second instance removed — single source of truth below) -->
+
+        <!-- ⚡ 0-DTE GAMMA BLAST OI ACCUMULATION MATRIX (JANE STREET DETECTOR) — VERY BOTTOM OF PAGE -->
+        <div class="gamma-matrix-card" style="margin-top: 24px;">
+            <div class="section-header">
+                <div class="section-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                    ⚡ 0-DTE Gamma Blast OI Accumulation Matrix (Jane Street Detector)
+                </div>
+                <div class="gamma-bell-alert" id="gammaBellAlert">
+                    🔔 ACCUMULATION ALERT DETECTED
+                </div>
+            </div>
+
+            <div class="matrix-grid">
+                <!-- Table 1: CALL OI Matrix -->
+                <div>
+                    <div class="matrix-table-title text-green">
+                        🟢 CALL Options OI Surge Matrix (% Change)
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Strike</th>
+                                <th>3m</th>
+                                <th>5m</th>
+                                <th>15m</th>
+                                <th>30m</th>
+                            </tr>
+                        </thead>
+                        <tbody id="callMatrixBody">
+                            <tr>
+                                <td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px;">
+                                    Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table 2: PUT OI Matrix -->
+                <div>
+                    <div class="matrix-table-title text-red">
+                        🔴 PUT Options OI Surge Matrix (% Change)
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Strike</th>
+                                <th>3m</th>
+                                <th>5m</th>
+                                <th>15m</th>
+                                <th>30m</th>
+                            </tr>
+                        </thead>
+                        <tbody id="putMatrixBody">
+                            <tr>
+                                <td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px;">
+                                    Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Table 3: NIFTY Spot Lag Table -->
+                <div>
+                    <div class="matrix-table-title text-blue">
+                        📊 NIFTY Spot Lag Movement (%)
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Window</th>
+                                <th>NIFTY Spot Move %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="spotLagBody">
+                            <tr>
+                                <td colspan="2" style="text-align:center; color:var(--text-muted); padding:15px;">
+                                    Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let expiryChart = null;
+        let payoffChart = null;
+        let displayMode = 'qty';
+        let countdownVal = 30;
+        let guardCountdown = 30;
+        let matrixCountdown = 15;
+        const LS_KEY = 'nifty_dashboard_cache';
+
+        /* ── localStorage helpers ── */
+        function saveToCache(data) {
+            try { localStorage.setItem(LS_KEY, JSON.stringify(data)); } catch(e) {}
+        }
+        function loadFromCache() {
+            try { const s = localStorage.getItem(LS_KEY); return s ? JSON.parse(s) : null; } catch(e) { return null; }
+        }
+
+        /* Render cached data on page-load so the UI is never blank */
+        (function seedFromCache() {
+            const cached = loadFromCache();
+            if (cached) {
+                renderData(cached);
+                const sb = document.getElementById('staleBanner');
+                sb.classList.add('visible');
+                document.getElementById('staleFrom').innerText = cached.timestamp || '--:--:--';
+            }
+        })();
+
+        // Web Audio Synthesizer for 🔔 Bell Chime Alert
+        function playBellSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, ctx.currentTime); // A5 note bell
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 1.2);
+            } catch (e) { console.warn('Audio play error:', e); }
+        }
+
+        function formatCurrency(val) {
+            return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(val);
+        }
+
+        function toggleDisplayMode() {
+            displayMode = displayMode === 'qty' ? 'lots' : 'qty';
+            document.getElementById('btnModeToggle').innerText = displayMode === 'qty' ? 'Show Lots' : 'Show Qty';
+            fetchData();
+        }
+
+        // #1 Position Guard — polls /api/position-guard every 30s
+        async function fetchPositionGuard() {
+            try {
+                const resp = await fetch('/api/position-guard');
+                const data = await resp.json();
+                const banner = document.getElementById('guardBanner');
+                const alerts = document.getElementById('guardAlerts');
+                const checked = document.getElementById('guardCheckedAt');
+                checked.innerText = 'Checked: ' + data.checked_at;
+                if (data.alert_count > 0) {
+                    banner.classList.add('visible');
+                    alerts.innerHTML = data.alerts.map(a =>
+                        `<span class="guard-alert-item guard-alert-${a.severity.toLowerCase()}">
+                        ${a.severity === 'HIGH' ? '🔴' : '🟡'} ${a.symbol} +${a.qty}qty @ ₹${a.ltp}
+                    </span>`
+                    ).join('');
+                } else {
+                    banner.classList.remove('visible');
+                    alerts.innerHTML = '';
+                }
+            } catch (e) { console.warn('Position guard check failed:', e); }
+        }
+
+        // ⚡ 0-DTE Gamma Blast Matrix — polls /api/gamma-blast-matrix every 15s
+        async function fetchGammaMatrix() {
+            try {
+                const resp = await fetch('/api/gamma-blast-matrix');
+                const data = await resp.json();
+
+                // Render CALL Matrix
+                const callBody = document.getElementById('callMatrixBody');
+                callBody.innerHTML = data.call_matrix.map(row => `
+                    <tr>
+                        <td style="font-weight:700;">${row.label}</td>
+                        ${['3m', '5m', '15m', '30m'].map(w => {
+                    const cell = row.changes[w];
+                    const bClass = cell.breached ? 'badge-breached-ce' : 'badge-normal';
+                    return `<td class="mono ${bClass}">${cell.pct >= 0 ? '+' : ''}${cell.pct.toFixed(1)}%</td>`;
+                }).join('')}
+                    </tr>
+                `).join('');
+
+                // Render PUT Matrix
+                const putBody = document.getElementById('putMatrixBody');
+                putBody.innerHTML = data.put_matrix.map(row => `
+                    <tr>
+                        <td style="font-weight:700;">${row.label}</td>
+                        ${['3m', '5m', '15m', '30m'].map(w => {
+                    const cell = row.changes[w];
+                    const bClass = cell.breached ? 'badge-breached-pe' : 'badge-normal';
+                    return `<td class="mono ${bClass}">${cell.pct >= 0 ? '+' : ''}${cell.pct.toFixed(1)}%</td>`;
+                }).join('')}
+                    </tr>
+                `).join('');
+
+                // Render Spot Lag Table
+                const spotBody = document.getElementById('spotLagBody');
+                spotBody.innerHTML = ['3m', '5m', '15m', '30m'].map(w => {
+                    const move = data.spot_changes[w] || 0;
+                    const mClass = Math.abs(move) < 0.15 ? 'text-green' : 'text-orange';
+                    return `
+                        <tr>
+                            <td style="font-weight:700;">NIFTY ${w} Move</td>
+                            <td class="mono ${mClass}">${move >= 0 ? '+' : ''}${move.toFixed(2)}%</td>
+                        </tr>`;
+                }).join('');
+
+                // Alert bell chime
+                const alertBadge = document.getElementById('gammaBellAlert');
+                if (data.alert_active) {
+                    if (!alertBadge.classList.contains('active')) {
+                        playBellSound();
+                    }
+                    alertBadge.classList.add('active');
+                } else {
+                    alertBadge.classList.remove('active');
+                }
+
+            } catch (e) { console.warn('Gamma matrix fetch error:', e); }
+        }
+
+        /* ── Core data renderer (used by both live fetch and cache restore) ── */
+        function renderData(data) {
+            document.getElementById('spotPrice').innerText = data.spot.toFixed(2);
+            document.getElementById('vixVal').innerText = data.vix.toFixed(2);
+            document.getElementById('lastUpdated').innerText = data.timestamp;
+
+            document.getElementById('putsSold').innerText = data.summary.puts_sold.toLocaleString();
+            document.getElementById('putsSoldLots').innerText = data.summary.puts_sold_lots;
+            document.getElementById('callsSold').innerText = data.summary.calls_sold.toLocaleString();
+            document.getElementById('callsSoldLots').innerText = data.summary.calls_sold_lots;
+
+            const deltaElem = document.getElementById('overallDelta');
+            deltaElem.innerText = (data.summary.overall_delta >= 0 ? '+' : '') + data.summary.overall_delta.toFixed(2);
+            deltaElem.className = 'kpi-value ' + (data.summary.overall_delta >= 0 ? 'text-green' : 'text-red');
+
+            document.getElementById('overallTheta').innerText = formatCurrency(data.summary.overall_theta);
+            document.getElementById('marginReq').innerText = formatCurrency(data.summary.margin_required);
+
+            document.getElementById('timeValueTotal').innerText = formatCurrency(data.summary.time_value_total || 0);
+            document.getElementById('itmRiskTotal').innerText = formatCurrency(data.summary.itm_risk_total || 0);
+
+            const badge = document.getElementById('sentimentBadge');
+            badge.innerText = data.summary.sentiment;
+            badge.style.backgroundColor = data.summary.sentiment_color + '22';
+            badge.style.color = data.summary.sentiment_color;
+            badge.style.border = `1px solid ${data.summary.sentiment_color}66`;
+
+            const stressPlus = document.getElementById('stressPlus');
+            stressPlus.innerText = (data.summary.pnl_plus_100 >= 0 ? '+' : '') + formatCurrency(data.summary.pnl_plus_100);
+            stressPlus.className = 'stress-val ' + (data.summary.pnl_plus_100 >= 0 ? 'text-green' : 'text-red');
+
+            const stressMinus = document.getElementById('stressMinus');
+            stressMinus.innerText = (data.summary.pnl_minus_100 >= 0 ? '+' : '') + formatCurrency(data.summary.pnl_minus_100);
+            stressMinus.className = 'stress-val ' + (data.summary.pnl_minus_100 >= 0 ? 'text-green' : 'text-red');
+
+            const unPnlElem = document.getElementById('unrealizedPnl');
+            unPnlElem.innerText = (data.summary.unrealized_pnl >= 0 ? '+' : '') + formatCurrency(data.summary.unrealized_pnl);
+            unPnlElem.className = 'stress-val ' + (data.summary.unrealized_pnl >= 0 ? 'text-green' : 'text-red');
+
+            const relPnlElem = document.getElementById('realizedPnl');
+            relPnlElem.innerText = (data.summary.realized_pnl >= 0 ? '+' : '') + formatCurrency(data.summary.realized_pnl);
+            relPnlElem.className = 'stress-val ' + (data.summary.realized_pnl >= 0 ? 'text-green' : 'text-red');
+
+            const totalPnlElem = document.getElementById('totalPnl');
+            totalPnlElem.innerText = (data.summary.total_pnl >= 0 ? '+' : '') + formatCurrency(data.summary.total_pnl);
+            totalPnlElem.className = 'stress-val ' + (data.summary.total_pnl >= 0 ? 'text-green' : 'text-red');
+            totalPnlElem.style.fontSize = '17px'; totalPnlElem.style.fontWeight = '800';
+
+            const todayDeltaElem = document.getElementById('todayDelta');
+            todayDeltaElem.innerText = (data.summary.today_delta >= 0 ? '+' : '') + (data.summary.today_delta || 0).toFixed(2);
+            todayDeltaElem.className = 'stress-val ' + (data.summary.today_delta >= 0 ? 'text-green' : 'text-red');
+
+            const todayThetaElem = document.getElementById('todayTheta');
+            todayThetaElem.innerText = formatCurrency(data.summary.today_theta || 0);
+            todayThetaElem.className = 'stress-val ' + ((data.summary.today_theta || 0) >= 0 ? 'text-green' : 'text-red');
+
+            renderChart(data.expiry_groups);
+            renderExpiryGreeks(data.expiry_greeks || {});
+            renderTable(data.positions);
+
+            populatePayoffExpiryOptions(data.expiry_greeks || {});
+            fetchPayoffGraph();
+        }
+
+        /* ── Payoff Graph Functions (At Expiry vs Live T+0 BS) ── */
+        function populatePayoffExpiryOptions(expiryGreeks) {
+            const select = document.getElementById('payoffExpirySelect');
+            if (!select) return;
+            const currentVal = select.value;
+            const expiries = Object.keys(expiryGreeks || {});
+            
+            let html = '<option value="ALL">ALL Expiries Combined</option>';
+            expiries.forEach(exp => {
+                html += `<option value="${exp}">${exp}</option>`;
+            });
+            select.innerHTML = html;
+            if (expiries.includes(currentVal) || currentVal === 'ALL') {
+                select.value = currentVal;
+            }
+        }
+
+        async function fetchPayoffGraph() {
+            const expSelect = document.getElementById('payoffExpirySelect');
+            const selectedExpiry = expSelect ? expSelect.value : 'ALL';
+            try {
+                const resp = await fetch(`/api/payoff?expiry=${encodeURIComponent(selectedExpiry)}`);
+                const data = await resp.json();
+
+                document.getElementById('payoffCurrentSpotHeader').innerText = data.spot.toFixed(2);
+                document.getElementById('payoffMaxProfit').innerText = formatCurrency(data.max_profit);
+                document.getElementById('payoffMaxLoss').innerText = formatCurrency(data.max_loss);
+                document.getElementById('payoffLegCount').innerText = data.leg_count;
+
+                const sd = data.sd_levels || {};
+                document.getElementById('sdM2').innerText = `-2SD: ${sd.m2sd || '--'}`;
+                document.getElementById('sdM1').innerText = `-1SD: ${sd.m1sd || '--'}`;
+                document.getElementById('sdP1').innerText = `+1SD: ${sd.p1sd || '--'}`;
+                document.getElementById('sdP2').innerText = `+2SD: ${sd.p2sd || '--'}`;
+
+                const beElem = document.getElementById('payoffBreakevens');
+                if (data.breakevens && data.breakevens.length > 0) {
+                    beElem.innerText = data.breakevens.map(b => b.toFixed(0)).join(' / ');
+                } else {
+                    beElem.innerText = 'No Breakeven Cross';
+                }
+
+                // Update Sensibull Bottom Pill Badge
+                const projBadge = document.getElementById('sensibullProjectedBadge');
+                const projVal = document.getElementById('sensibullProjectedVal');
+                const pnlToday = data.current_pnl_today || 0;
+                projVal.innerText = (pnlToday >= 0 ? '+' : '') + formatCurrency(pnlToday);
+
+                if (pnlToday >= 0) {
+                    projBadge.style.background = '#059669'; // Green badge
+                    projBadge.style.boxShadow = '0 4px 14px rgba(5, 150, 105, 0.4)';
+                } else {
+                    projBadge.style.background = '#dc2626'; // Red badge
+                    projBadge.style.boxShadow = '0 4px 14px rgba(220, 38, 38, 0.4)';
+                }
+
+                renderPayoffChart(data);
+            } catch (e) {
+                console.warn('Payoff graph fetch error:', e);
+            }
+        }
+
+        function renderPayoffChart(data) {
+            const ctx = document.getElementById('payoffChart').getContext('2d');
+            if (payoffChart) { payoffChart.destroy(); }
+
+            const labels = data.spot_range;
+            const currentSpot = data.spot;
+            const sd = data.sd_levels || {};
+
+            // Custom Chart.js Plugin to draw vertical lines for Current Spot and SD levels
+            const sensibullOverlayPlugin = {
+                id: 'sensibullOverlay',
+                afterDraw: (chart) => {
+                    const { ctx, chartArea: { top, bottom, left, right }, scales: { x, y } } = chart;
+
+                    const getX = (val) => {
+                        const index = labels.indexOf(val);
+                        if (index !== -1) return x.getPixelForValue(index);
+                        for (let i = 0; i < labels.length - 1; i++) {
+                            if (labels[i] <= val && labels[i+1] >= val) {
+                                const x1 = x.getPixelForValue(i);
+                                const x2 = x.getPixelForValue(i+1);
+                                return x1 + (val - labels[i]) / (labels[i+1] - labels[i]) * (x2 - x1);
+                            }
+                        }
+                        return null;
+                    };
+
+                    // Draw SD Vertical Lines
+                    const sdMap = [
+                        { label: '-2SD', val: sd.m2sd },
+                        { label: '-1SD', val: sd.m1sd },
+                        { label: '1SD',  val: sd.p1sd },
+                        { label: '2SD',  val: sd.p2sd }
+                    ];
+
+                    ctx.save();
+                    sdMap.forEach(item => {
+                        const px = getX(item.val);
+                        if (px && px >= left && px <= right) {
+                            ctx.beginPath();
+                            ctx.setLineDash([4, 4]);
+                            ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+                            ctx.lineWidth = 1;
+                            ctx.moveTo(px, top + 20);
+                            ctx.lineTo(px, bottom);
+                            ctx.stroke();
+
+                            ctx.font = '600 10px Inter';
+                            ctx.fillStyle = '#94a3b8';
+                            ctx.textAlign = 'center';
+                            ctx.fillText(item.label, px, top + 12);
+                        }
+                    });
+
+                    // Draw Red Vertical Line for Current Spot
+                    const spotPx = getX(currentSpot);
+                    if (spotPx && spotPx >= left && spotPx <= right) {
+                        ctx.beginPath();
+                        ctx.setLineDash([]);
+                        ctx.strokeStyle = '#ef4444';
+                        ctx.lineWidth = 1.5;
+                        ctx.moveTo(spotPx, top);
+                        ctx.lineTo(spotPx, bottom);
+                        ctx.stroke();
+
+                        // Dot at zero line
+                        const zeroPy = y.getPixelForValue(0);
+                        ctx.beginPath();
+                        ctx.arc(spotPx, zeroPy, 4, 0, 2 * Math.PI);
+                        ctx.fillStyle = '#ef4444';
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                }
+            };
+
+            payoffChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'At Expiry Payoff (₹)',
+                            data: data.payoff_expiry,
+                            borderWidth: 2.8,
+                            fill: {
+                                target: 'origin',
+                                above: 'rgba(16, 185, 129, 0.15)',
+                                below: 'rgba(239, 68, 68, 0.15)'
+                            },
+                            segment: {
+                                borderColor: ctx => {
+                                    const y0 = ctx.p0.parsed.y;
+                                    const y1 = ctx.p1.parsed.y;
+                                    return (y0 >= 0 && y1 >= 0) ? '#10b981' : ((y0 < 0 && y1 < 0) ? '#ef4444' : '#10b981');
+                                }
+                            },
+                            pointRadius: 0,
+                            pointHoverRadius: 5,
+                            tension: 0.05
+                        },
+                        {
+                            label: 'T+0 Live BS PnL (₹)',
+                            data: data.payoff_today,
+                            borderColor: '#2563eb',
+                            borderWidth: 2.8,
+                            borderDash: [],
+                            fill: false,
+                            pointRadius: 0,
+                            pointHoverRadius: 5,
+                            tension: 0.25
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { family: 'Inter', weight: 600 } } },
+                        tooltip: {
+                            callbacks: {
+                                title: function(items) { return `NIFTY Spot: ${items[0].label}`; },
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${formatCurrency(context.raw)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: 'rgba(255,255,255,0.04)' },
+                            ticks: { color: '#94a3b8', font: { family: 'Inter' }, maxTicksLimit: 14 }
+                        },
+                        y: {
+                            grid: { color: 'rgba(255,255,255,0.04)' },
+                            ticks: {
+                                color: '#94a3b8',
+                                font: { family: 'Inter' },
+                                callback: function(value) { return '₹' + (value/1000).toFixed(0) + 'k'; }
+                            }
+                        }
+                    }
+                },
+                plugins: [sensibullOverlayPlugin]
+            });
+        }
+
+        async function fetchData() {
+            const minPremium = document.getElementById('minPremium').value || 0;
+            const minDays = document.getElementById('minDays').value || 0;
+
+            try {
+                const resp = await fetch(`/api/portfolio?min_premium=${minPremium}&min_days=${minDays}`);
+                const data = await resp.json();
+
+                /* Show/hide stale-data banner */
+                const staleBanner = document.getElementById('staleBanner');
+                if (data.is_cached) {
+                    staleBanner.classList.add('visible');
+                    document.getElementById('staleFrom').innerText = data.last_successful_fetch || '--:--:--';
+                } else {
+                    staleBanner.classList.remove('visible');
+                    /* Persist fresh data so page-reload / reconnect shows last known state */
+                    saveToCache(data);
+                }
+
+                renderData(data);
+
+            } catch (err) {
+                console.error('Error fetching portfolio data:', err);
+                /* Network totally unreachable — restore from localStorage */
+                const cached = loadFromCache();
+                if (cached) {
+                    renderData(cached);
+                    const staleBanner = document.getElementById('staleBanner');
+                    staleBanner.classList.add('visible');
+                    document.getElementById('staleFrom').innerText = cached.timestamp || '--:--:--';
+                }
+            }
+        }
+
+        // #4 Per-Expiry Greeks Table
+        function renderExpiryGreeks(expiryGreeks) {
+            const tbody = document.getElementById('expiryGreeksBody');
+            const entries = Object.entries(expiryGreeks);
+            if (!entries.length) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:20px;">No open positions</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = entries.map(([expiry, g]) => {
+                const dClass = g.delta >= 0 ? 'text-green' : 'text-red';
+                const tClass = g.theta >= 0 ? 'text-green' : 'text-red';
+                return `
+                <tr>
+                    <td style="font-weight:700;">${expiry}</td>
+                    <td class="mono ${dClass}">${g.delta >= 0 ? '+' : ''}${g.delta.toFixed(2)}</td>
+                    <td class="mono ${tClass}">${g.theta >= 0 ? '+\u20b9' : '-\u20b9'}${Math.abs(g.theta).toFixed(2)}</td>
+                    <td class="mono text-red">${g.ce_qty}</td>
+                    <td class="mono text-green">${g.pe_qty}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderChart(expiryGroups) {
+            const labels = Object.keys(expiryGroups);
+            const putsData = labels.map(l => displayMode === 'qty' ? expiryGroups[l].puts_qty : expiryGroups[l].puts_lots);
+            const callsData = labels.map(l => displayMode === 'qty' ? expiryGroups[l].calls_qty : expiryGroups[l].calls_lots);
+
+            const ctx = document.getElementById('expiryChart').getContext('2d');
+            if (expiryChart) { expiryChart.destroy(); }
+
+            expiryChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels.length ? labels : ['No Active Expiries'],
+                    datasets: [
+                        { label: 'Puts (PE)', data: putsData.length ? putsData : [0], backgroundColor: '#10b981', borderRadius: 6 },
+                        { label: 'Calls (CE)', data: callsData.length ? callsData : [0], backgroundColor: '#ef4444', borderRadius: 6 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8', font: { family: 'Inter', weight: 600 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.dataset.label}: ${context.raw} ${displayMode === 'qty' ? 'Qty' : 'Lots'}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { family: 'Inter' } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8', font: { family: 'Inter' } } }
+                    }
+                }
+            });
+        }
+
+        function renderTable(positions) {
+            const tbody = document.getElementById('positionsTableBody');
+            tbody.innerHTML = '';
+
+            if (!positions || positions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--text-muted); padding: 30px;">No positions found.</td></tr>`;
+                return;
+            }
+
+            positions.forEach(pos => {
+                const tr = document.createElement('tr');
+                const pnlClass = pos.pnl >= 0 ? 'text-green' : 'text-red';
+                const deltaClass = pos.delta >= 0 ? 'text-green' : 'text-red';
+                const isClosed = pos.status === 'CLOSED';
+                const ivDisplay = (!isClosed && pos.iv > 0) ? `<span style="color:var(--accent-purple);font-weight:700;">${pos.iv.toFixed(1)}%</span>` : '-';
+
+                tr.innerHTML = `
+                <td style="font-weight: 700; ${isClosed ? 'opacity: 0.6;' : ''}">${pos.symbol}</td>
+                <td><span class="${pos.opt_type === 'CE' ? 'tag-ce' : 'tag-pe'}">${pos.opt_type}</span></td>
+                <td class="mono">${pos.strike}</td>
+                <td>${isClosed ? '<span class="tag-closed">CLOSED</span>' : '<span class="tag-pe" style="background:rgba(59,130,246,0.15);color:#3b82f6;">OPEN</span>'}</td>
+                <td class="mono">${pos.qty} ${isClosed ? '' : `<span style="font-size:11px; color:var(--text-muted);">(${pos.lots}L)</span>`}</td>
+                <td class="mono">₹${pos.avg_price.toFixed(2)}</td>
+                <td class="mono">₹${pos.ltp.toFixed(2)}</td>
+                <td class="mono">${ivDisplay}</td>
+                <td class="mono ${pnlClass}" style="font-weight:700;">
+                    ${pos.pnl >= 0 ? '+' : ''}₹${pos.pnl.toFixed(2)}
+                </td>
+                <td class="mono ${deltaClass}">${isClosed ? '-' : (pos.delta >= 0 ? '+' : '') + pos.delta.toFixed(2)}</td>
+                <td class="mono text-green">${isClosed ? '-' : '+₹' + pos.theta.toFixed(2)}</td>
+                <td class="mono text-blue">${isClosed ? '-' : pos.vega.toFixed(2)}</td>
+            `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Auto-refresh Countdown Timer Loop (30s main, 30s guard, 15s gamma)
+        function startTimer() {
+            setInterval(() => {
+                countdownVal--;
+                if (countdownVal <= 0) {
+                    countdownVal = 30;
+                    fetchData();
+                }
+                document.getElementById('countdown').innerText = countdownVal;
+
+                // Position guard: poll every 30s
+                guardCountdown--;
+                if (guardCountdown <= 0) {
+                    guardCountdown = 30;
+                    fetchPositionGuard();
+                }
+
+                // Gamma Matrix: poll every 15s
+                matrixCountdown--;
+                if (matrixCountdown <= 0) {
+                    matrixCountdown = 15;
+                    fetchGammaMatrix();
+                }
+            }, 1000);
+        }
+
+        // Initial Fetch & Start Timer
+        fetchData();
+        fetchPositionGuard();
+        fetchGammaMatrix();
+        startTimer();
+    </script>
+
+</body>
+
+</html>

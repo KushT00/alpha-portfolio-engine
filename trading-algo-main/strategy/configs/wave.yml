@@ -1,0 +1,38 @@
+# Global Configuration - Default values for all symbols
+default:
+  # Core Trading Parameters
+  symbol_name: "NIFTY25SEPFUT"
+  exchange: "NFO"
+  
+  # Gap Parameters
+  buy_gap: 25
+  sell_gap: 25
+  
+  # Order Management Parameters
+  buy_quantity: 75
+  sell_quantity: 75
+  lot_size: 75
+
+  cool_off_time: 10
+  product_type: "NRML"
+  tag: "WaveScraper"
+  
+  # Risk Management Parameters (Delta Limits)
+  min_nifty_delta: -100
+  max_nifty_delta: 100
+  min_bank_nifty_delta: -100
+  max_bank_nifty_delta: 100
+  
+  # Greeks Calculation Parameters
+  interest_rate: 10.0
+  todays_volatility: 20.0
+  delta_calculation_days: 10
+  
+  # Margin Parameters
+  margin_spread: 100.0
+  margin_single_pe_ce: 100.0
+  margin_both_pe_ce: 100.0
+
+  # Order Type
+  order_type: "LIMIT"
+  variety: "REGULAR"
